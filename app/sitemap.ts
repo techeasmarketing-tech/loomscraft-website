@@ -95,9 +95,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
       }));
 
-    return [...staticRoutes, ...productRoutes, ...additionalPageRoutes];
+    const cmsBackedStaticSlugs = new Set([
+      "our-craft",
+      "delivery-information",
+      "returns-and-exchanges",
+      "privacy-policy",
+      "terms",
+    ]);
+    const publishedPages = new Set(pageSlugs);
+    const availableStaticRoutes = staticRoutes.filter((route) => {
+      const slug = new URL(route.url).pathname.replace(/^\/+|\/+$/g, "");
+      return !cmsBackedStaticSlugs.has(slug) || publishedPages.has(slug);
+    });
+
+    return [
+      ...availableStaticRoutes,
+      ...productRoutes,
+      ...additionalPageRoutes,
+    ];
   } catch (err) {
     console.error("Failed to generate dynamic sitemap routes:", err);
-    return staticRoutes;
+    return staticRoutes.filter((route) => {
+      const slug = new URL(route.url).pathname.replace(/^\/+|\/+$/g, "");
+      return ![
+        "our-craft",
+        "delivery-information",
+        "returns-and-exchanges",
+        "privacy-policy",
+        "terms",
+      ].includes(slug);
+    });
   }
 }

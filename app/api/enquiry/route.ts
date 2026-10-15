@@ -17,23 +17,40 @@ export async function POST(req: NextRequest) {
 
     const errors: Record<string, string> = {};
 
-    if (!name || typeof name !== "string" || name.trim().length < 2) {
+    if (
+      !name ||
+      typeof name !== "string" ||
+      name.trim().length < 2 ||
+      name.trim().length > 120
+    ) {
       errors.name = "Please enter your name (minimum 2 characters).";
     }
 
-    if (!contact || typeof contact !== "string" || contact.trim().length < 7) {
+    if (
+      !contact ||
+      typeof contact !== "string" ||
+      contact.trim().length < 7 ||
+      contact.trim().length > 40
+    ) {
       errors.contact =
         "Please provide a valid phone or WhatsApp number (minimum 7 digits).";
     }
 
-    if (email && typeof email === "string" && email.trim().length > 0) {
+    if (email && (typeof email !== "string" || email.trim().length > 254)) {
+      errors.email = "Please enter a valid email address.";
+    } else if (email && email.trim().length > 0) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email.trim())) {
         errors.email = "Please enter a valid email address.";
       }
     }
 
-    if (!message || typeof message !== "string" || message.trim().length < 5) {
+    if (
+      !message ||
+      typeof message !== "string" ||
+      message.trim().length < 5 ||
+      message.trim().length > 2000
+    ) {
       errors.message =
         "Please enter your enquiry or question (minimum 5 characters).";
     }
@@ -43,36 +60,35 @@ export async function POST(req: NextRequest) {
     let verifiedVariant = null;
 
     if (productSlug) {
-      verifiedProduct = await getProduct(productSlug);
-      if (!verifiedProduct) {
-        errors.product = "The selected product is no longer active in the catalogue.";
-      } else if (variantColour) {
-        verifiedVariant = verifiedProduct.variants.find(
-          (v) => v.colour.toLowerCase() === variantColour.toLowerCase(),
-        );
-        if (!verifiedVariant) {
-          errors.variant = "The selected colour variant was not found.";
+      if (typeof productSlug !== "string" || productSlug.length > 120) {
+        errors.product = "The selected product is invalid.";
+      } else {
+        verifiedProduct = await getProduct(productSlug);
+        if (!verifiedProduct) {
+          errors.product =
+            "The selected product is no longer active in the catalogue.";
+        } else if (variantColour) {
+          verifiedVariant = verifiedProduct.variants.find(
+            (v) =>
+              typeof variantColour === "string" &&
+              v.colour.toLowerCase() === variantColour.toLowerCase(),
+          );
+          if (!verifiedVariant) {
+            errors.variant = "The selected colour variant was not found.";
+          }
         }
       }
     }
 
     if (Object.keys(errors).length > 0) {
-      return NextResponse.json(
-        { ok: false, errors },
-        { status: 400 },
-      );
+      return NextResponse.json({ ok: false, errors }, { status: 400 });
     }
 
     const enquiryId = `LC-${Date.now().toString(36).toUpperCase()}-${randomUUID().slice(0, 4).toUpperCase()}`;
-    const timestamp = new Date().toISOString();
-
-    // Prepare verified enquiry record
+    // Prepare a WhatsApp handoff. This route does not deliver or persist enquiries.
     const enquiryRecord = {
       id: enquiryId,
-      timestamp,
       name: name.trim(),
-      contact: contact.trim(),
-      email: email ? email.trim() : null,
       message: message.trim(),
       product: verifiedProduct
         ? {
@@ -85,11 +101,7 @@ export async function POST(req: NextRequest) {
         : null,
     };
 
-    // Genuine delivery mechanism:
-    // Log enquiry details to server record
-    console.log("[LOOMS Craftz Enquiry Received]", JSON.stringify(enquiryRecord, null, 2));
-
-    // Construct WhatsApp prefilled message so customer can directly chat with reference
+    // Do not log submitted contact details or message content.
     const settings = await getSettings();
     const productNote = enquiryRecord.product
       ? ` regarding ${enquiryRecord.product.name} (${enquiryRecord.product.variantColour || "Standard"}, SKU: ${enquiryRecord.product.variantSku || "N/A"})`
@@ -101,13 +113,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       enquiryId,
-      message: "Your enquiry has been received. Our team will review and contact you shortly.",
+      message:
+        "Your enquiry draft is ready. Continue in WhatsApp to send it to LOOMS Craftz.",
       whatsappUrl: waUrl,
     });
-  } catch (err: any) {
-    console.error("Enquiry submission error:", err);
+  } catch (err) {
+    console.error("Enquiry submission error", err);
     return NextResponse.json(
-      { ok: false, error: "Internal server error processing enquiry. Please try again or reach out on WhatsApp." },
+      {
+        ok: false,
+        error:
+          "Internal server error processing enquiry. Please try again or reach out on WhatsApp.",
+      },
       { status: 500 },
     );
   }

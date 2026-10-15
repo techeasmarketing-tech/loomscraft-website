@@ -55,16 +55,46 @@ export default function Header({
         </Link>
         <div className="icons">
           <button
+            className="header-action bag-action"
             onClick={() => setOpen(true)}
             aria-label={`Shopping bag with ${count} items`}
           >
-            Bag{count > 0 && <em>{count}</em>}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 8h14l1 13H4L5 8Z" />
+              <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+            </svg>
+            <span>Bag</span>
+            <em>{count}</em>
           </button>
           <Link
+            className="header-action wishlist-action"
             href="/wishlist"
             aria-label={`Wishlist with ${wish.length} items`}
           >
-            ♡{wish.length > 0 && <em>{wish.length}</em>}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5Z" />
+            </svg>
+            <span>Wishlist</span>
+            <em>{wish.length}</em>
+          </Link>
+          <Link className="shop-action" href="/collections">
+            Shop
           </Link>
           <button
             className="burger"
@@ -85,7 +115,7 @@ export default function Header({
             onClick={() => setO(o === i ? null : i)}
             aria-expanded={o === i}
           >
-            {n.l} <span>⌄</span>
+            {n.l} <span className="nav-chevron" aria-hidden="true" />
           </button>
         ))}
       </nav>

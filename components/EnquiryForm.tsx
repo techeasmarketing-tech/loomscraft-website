@@ -29,6 +29,7 @@ export default function EnquiryForm({
   const [result, setResult] = useState<{
     enquiryId: string;
     whatsappUrl: string;
+    message: string;
   } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +76,7 @@ export default function EnquiryForm({
         setResult({
           enquiryId: data.enquiryId,
           whatsappUrl: data.whatsappUrl,
+          message: data.message,
         });
         if (onSuccess) onSuccess();
       }
@@ -90,10 +92,9 @@ export default function EnquiryForm({
   if (result) {
     return (
       <div className="enquiry-success" style={{ padding: "1.5rem", background: "var(--sand)", border: "1px solid var(--line)", marginTop: "1.5rem" }}>
-        <h3 style={{ color: "var(--navy)", marginBottom: "0.5rem" }}>Enquiry Received</h3>
+        <h3 style={{ color: "var(--navy)", marginBottom: "0.5rem" }}>Continue your enquiry</h3>
         <p style={{ marginBottom: "1rem", lineHeight: 1.6 }}>
-          Thank you, <strong>{name}</strong>. Your enquiry reference is <code>{result.enquiryId}</code>.
-          Our team will review your request and get back to you promptly.
+          {result.message} Reference: <code>{result.enquiryId}</code>.
         </p>
         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
           <a

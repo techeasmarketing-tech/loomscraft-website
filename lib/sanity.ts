@@ -15,7 +15,8 @@ const f = async <T>(
     });
   } catch (err) {
     console.error("Sanity query error for:", q, err);
-    return null;
+    // Do not disguise a CMS outage as an empty catalogue or missing document.
+    throw new Error("Sanity content request failed", { cause: err });
   }
 };
 
@@ -52,8 +53,9 @@ const clean = (p: any): Product | null => {
   const baseMrp =
     p.mrp != null && Number(p.mrp) > 0 ? Number(p.mrp) : undefined;
 
-  const variants = (p.variants || [])
-    .filter((v: any) => v?.colour && v.images?.length)
+  const rawVariants = (p.variants || []).filter((v: any) => v?.colour);
+  const fallbackImages = rawVariants.flatMap((v: any) => v.images || []);
+  const variants = rawVariants
     .map((v: any) => {
       // If variant has no price override, inherit the base product price. Same for MRP.
       const effectivePrice =
@@ -64,7 +66,9 @@ const clean = (p: any): Product | null => {
       return {
         ...v,
         hex: v.hex || "#cccccc",
-        images: v.images.map((u: string) => im(u, 1200) || u),
+        images: (v.images?.length ? v.images : fallbackImages).map(
+          (u: string) => im(u, 1200) || u,
+        ),
         price: effectivePrice,
         mrp: effectiveMrp,
       };
@@ -103,10 +107,14 @@ export const getProduct = async (slug: string): Promise<Product | null> => {
 };
 
 export const getCategories = async (): Promise<string[]> =>
-  (await f<string[]>(`*[_type=="category"] | order(order asc) .title`)) || [];
+  ((await f<{ title: string }[]>(
+    `*[_type=="category"] | order(order asc){title}`,
+  )) || []).map((category) => category.title).filter(Boolean);
 
 export const getOccasions = async (): Promise<string[]> =>
-  (await f<string[]>(`*[_type=="occasion"] | order(order asc) .title`)) || [];
+  ((await f<{ title: string }[]>(
+    `*[_type=="occasion"] | order(order asc){title}`,
+  )) || []).map((occasion) => occasion.title).filter(Boolean);
 
 export const getAllProductSlugs = async (): Promise<string[]> =>
   (await f<string[]>(

@@ -5,10 +5,13 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   ReactNode,
 } from "react";
 import type { Product } from "./data";
 import type { CartValidationResponse } from "./types";
+import { wa } from "./whatsapp";
+export { wa } from "./whatsapp";
 
 export type Line = {
   slug: string;
@@ -45,7 +48,7 @@ type StoreContextType = {
   isValidating: boolean;
   validationNotice: string | null;
   validateCart: () => Promise<void>;
-  clearNotice: () => void;
+  isOrderReady: boolean;
 };
 
 const C = createContext<StoreContextType | null>(null);
@@ -57,11 +60,6 @@ export const useStore = () => {
 };
 
 export const inr = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
-
-export const wa = (t: string, num = "") => {
-  const digits = num.replace(/\D/g, "");
-  return `https://wa.me/${digits}?text=${encodeURIComponent(t)}`;
-};
 
 export function Provider({
   children,
@@ -76,6 +74,12 @@ export function Provider({
   const [ready, setReady] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [validationNotice, setValidationNotice] = useState<string | null>(null);
+  const [cartRevision, setCartRevision] = useState(0);
+  const [validatedRevision, setValidatedRevision] = useState(-1);
+  const cartRef = useRef(cart);
+  const cartRevisionRef = useRef(cartRevision);
+  cartRef.current = cart;
+  cartRevisionRef.current = cartRevision;
 
   useEffect(() => {
     try {
@@ -93,14 +97,19 @@ export function Provider({
   }, [cart, wish, ready]);
 
   const validateCart = useCallback(async () => {
-    if (!cart.length) return;
+    const currentCart = cartRef.current;
+    if (!currentCart.length) {
+      setValidationNotice(null);
+      return;
+    }
     setIsValidating(true);
+    const revisionAtStart = cartRevisionRef.current;
     try {
       const res = await fetch("/api/cart/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: cart.map(({ slug, size, colour, qty }) => ({
+          items: currentCart.map(({ slug, size, colour, qty }) => ({
             slug,
             size,
             colour,
@@ -111,6 +120,7 @@ export function Provider({
 
       if (res.ok) {
         const data: CartValidationResponse = await res.json();
+        if (cartRevisionRef.current !== revisionAtStart) return;
         const updated: Line[] = data.items.map((item) => ({
           slug: item.slug,
           size: item.size,
@@ -126,6 +136,7 @@ export function Provider({
         }));
 
         setCart(updated);
+        setValidatedRevision(revisionAtStart);
         if (data.hasUnavailableItems) {
           setValidationNotice(
             "Some items in your bag are currently out of stock or sold out.",
@@ -134,24 +145,39 @@ export function Provider({
           setValidationNotice(
             "Item prices have been updated to current catalogue rates.",
           );
+        } else {
+          setValidationNotice(null);
         }
+      } else {
+        setValidatedRevision(-1);
+        setValidationNotice(
+          "We couldn't verify current stock and pricing. Please try again before ordering.",
+        );
       }
     } catch (err) {
       console.warn("Cart server validation skipped:", err);
+      setValidatedRevision(-1);
+      setValidationNotice(
+        "We couldn't verify current stock and pricing. Please try again before ordering.",
+      );
     } finally {
       setIsValidating(false);
     }
-  }, [cart]);
+  }, []);
 
   // Validate on drawer open if cart is not empty
   useEffect(() => {
-    if (open && cart.length > 0) {
-      validateCart();
+    if (cart.length === 0) {
+      setValidationNotice(null);
+      return;
     }
-  }, [open]);
+    if (open) void validateCart();
+  }, [open, cartRevision, cart.length, validateCart]);
 
   const add = (p: Product, size: string, colour: string, qty = 1) => {
     const v = p.variants.find((x) => x.colour === colour) || p.variants[0];
+    if (!v || v.inStock === false || !Number.isInteger(qty) || qty < 1) return;
+    const boundedQty = Math.min(99, qty);
     const effectivePrice =
       v.price != null && Number(v.price) > 0 ? Number(v.price) : p.price;
     const effectiveMrp =
@@ -162,14 +188,16 @@ export function Provider({
         (l) => l.slug === p.slug && l.size === size && l.colour === colour,
       );
       return f
-        ? c.map((l) => (l === f ? { ...l, qty: l.qty + qty } : l))
+        ? c.map((l) =>
+            l === f ? { ...l, qty: Math.min(99, l.qty + boundedQty) } : l,
+          )
         : [
             ...c,
             {
               slug: p.slug,
               size,
               colour,
-              qty,
+              qty: boundedQty,
               name: p.name,
               price: effectivePrice,
               mrp: effectiveMrp,
@@ -179,18 +207,35 @@ export function Provider({
             },
           ];
     });
+    setValidationNotice(
+      "Your bag changed. Verifying current stock and pricing…",
+    );
+    setValidatedRevision(-1);
+    setCartRevision((revision) => revision + 1);
     setOpen(true);
   };
 
-  const setQty = (i: number, q: number) =>
+  const setQty = (i: number, q: number) => {
     setCart((c) =>
       q < 1
         ? c.filter((_, j) => j !== i)
-        : c.map((l, j) => (j === i ? { ...l, qty: q } : l)),
+        : c.map((l, j) => (j === i ? { ...l, qty: Math.min(99, q) } : l)),
     );
+    setValidationNotice(
+      "Your bag changed. Verifying current stock and pricing…",
+    );
+    setValidatedRevision(-1);
+    setCartRevision((revision) => revision + 1);
+  };
 
-  const removeLine = (i: number) =>
+  const removeLine = (i: number) => {
     setCart((c) => c.filter((_, j) => j !== i));
+    setValidationNotice(
+      "Your bag changed. Verifying current stock and pricing…",
+    );
+    setValidatedRevision(-1);
+    setCartRevision((revision) => revision + 1);
+  };
 
   const toggle = (s: string) =>
     setWish((w) => (w.includes(s) ? w.filter((x) => x !== s) : [...w, s]));
@@ -208,8 +253,14 @@ export function Provider({
   );
   const totalSavings = Math.max(0, totalMrp - total);
   const count = lines.reduce((a, l) => a + l.qty, 0);
+  const isOrderReady =
+    lines.length > 0 &&
+    !isValidating &&
+    !validationNotice &&
+    validatedRevision === cartRevision;
 
   const order = () => {
+    if (!isOrderReady) return "#";
     const list = lines
       .map(
         (l, i) =>
@@ -248,7 +299,7 @@ export function Provider({
         isValidating,
         validationNotice,
         validateCart,
-        clearNotice: () => setValidationNotice(null),
+        isOrderReady,
       }}
     >
       {children}

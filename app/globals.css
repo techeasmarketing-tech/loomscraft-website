@@ -6,6 +6,8 @@
   --ink: #2b3445;
   --mut: #7b8494;
   --line: #e6e0d4;
+  --d: "Cormorant Garamond", Georgia, serif;
+  --b: "Jost", "Avenir Next", Arial, sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -76,19 +78,92 @@ h4 {
 }
 .icons {
   display: flex;
-  gap: 1.5rem;
+  gap: 0.7rem;
   align-items: center;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
+}
+.header-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 2.8rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  transition:
+    color 0.25s,
+    background 0.25s,
+    border-color 0.25s,
+    transform 0.25s;
+}
+.header-action:hover {
+  transform: translateY(-2px);
+}
+.header-action svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+}
+.bag-action {
+  color: var(--cream);
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.bag-action:hover {
+  background: #1c2b49;
+}
+.wishlist-action {
+  color: var(--navy);
+  background: #f4ecdd;
+  border-color: #e8d8b9;
+}
+.wishlist-action:hover {
+  background: #eee0c7;
+  border-color: var(--gold);
 }
 .icons em {
   font-style: normal;
-  background: var(--navy);
-  color: #fff;
   border-radius: 50%;
-  font-size: 0.65rem;
-  padding: 0.1rem 0.4rem;
-  margin-left: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.45rem;
+  width: 1.45rem;
+  text-align: center;
+}
+.bag-action em {
+  color: var(--navy);
+  background: var(--cream);
+}
+.wishlist-action em {
+  color: #fff;
+  background: var(--gold);
+}
+.shop-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6rem;
+  min-height: 2.8rem;
+  margin-left: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  color: #fff;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition:
+    color 0.25s,
+    background 0.25s,
+    border-color 0.25s;
+}
+.shop-action:hover {
+  color: var(--navy);
+  background: transparent;
 }
 .burger {
   display: none;
@@ -108,6 +183,10 @@ header {
   border-bottom: 1px solid var(--line);
 }
 .nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
   font-size: 0.78rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -117,12 +196,18 @@ header {
 .nav .act {
   color: var(--gold);
 }
-.nav span {
-  display: inline-block;
+.nav-chevron {
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-top: -0.2rem;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
   transition: transform 0.3s;
 }
-.nav .act span {
-  transform: rotate(180deg);
+.nav .act .nav-chevron {
+  margin-top: 0.2rem;
+  transform: rotate(225deg);
 }
 .mega {
   position: absolute;
@@ -848,6 +933,23 @@ footer a:hover {
   .burger {
     display: block;
   }
+  .bar {
+    gap: 1rem;
+  }
+  .icons {
+    gap: 0.45rem;
+  }
+  .header-action {
+    min-height: 2.5rem;
+    padding: 0.45rem 0.6rem;
+    gap: 0.4rem;
+  }
+  .shop-action {
+    min-width: 4.5rem;
+    min-height: 2.5rem;
+    margin-left: 0;
+    padding: 0.45rem 0.7rem;
+  }
   .mega {
     display: none;
   }
@@ -891,6 +993,58 @@ footer a:hover {
   .sec {
     padding-top: 3rem;
     padding-bottom: 3rem;
+  }
+}
+@media (max-width: 560px) {
+  .top {
+    font-size: 0.58rem;
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+  .bar {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+  .logo b {
+    font-size: 1.55rem;
+  }
+  .icons {
+    gap: 0.35rem;
+  }
+  .header-action {
+    min-height: 2.35rem;
+    padding: 0.4rem;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+  }
+  .header-action svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .icons em {
+    width: 1.2rem;
+    line-height: 1.2rem;
+    font-size: 0.62rem;
+  }
+  .shop-action {
+    min-width: auto;
+    min-height: 2.35rem;
+    padding: 0.4rem 0.55rem;
+    font-size: 0.68rem;
+  }
+  .burger {
+    font-size: 0.7rem;
+  }
+}
+@media (max-width: 420px) {
+  .header-action {
+    gap: 0.25rem;
+  }
+  .header-action span {
+    display: none;
+  }
+  .bar {
+    gap: 0.5rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

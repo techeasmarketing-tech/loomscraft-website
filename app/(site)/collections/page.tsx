@@ -1,6 +1,6 @@
 import CollectionsView from "@/components/CollectionsView";
 import { getProducts, getCategories, getOccasions } from "@/lib/sanity";
-export const metadata = { title: "Collections | LOOMS Craftz" };
+export const metadata = { title: "Collections" };
 export default async function Page() {
   const [PRODUCTS, CATS, OCC] = await Promise.all([
     getProducts(),

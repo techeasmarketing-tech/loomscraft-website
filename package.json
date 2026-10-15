@@ -1,6 +1,9 @@
 {
   "name": "looms-craftz",
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

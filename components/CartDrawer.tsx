@@ -14,7 +14,8 @@ export default function CartDrawer() {
     order,
     isValidating,
     validationNotice,
-    clearNotice,
+    validateCart,
+    isOrderReady,
   } = useStore();
 
   return (
@@ -43,12 +44,6 @@ export default function CartDrawer() {
             }}
           >
             <span>{validationNotice}</span>
-            <button
-              onClick={clearNotice}
-              style={{ fontWeight: "bold", marginLeft: "1rem" }}
-            >
-              ×
-            </button>
           </div>
         )}
 
@@ -69,10 +64,7 @@ export default function CartDrawer() {
                 key={l.slug + l.size + l.colour}
                 style={{ opacity: isOos ? 0.7 : 1 }}
               >
-                <img
-                  src={l.v.images[0] || "/placeholder.jpg"}
-                  alt={l.p.name}
-                />
+                <img src={l.v.images[0] || "/placeholder.jpg"} alt={l.p.name} />
                 <div>
                   <div
                     style={{
@@ -190,9 +182,29 @@ export default function CartDrawer() {
               href={order()}
               target="_blank"
               rel="noreferrer"
+              aria-disabled={!isOrderReady}
+              onClick={(event) => {
+                if (!isOrderReady) event.preventDefault();
+              }}
+              style={{
+                opacity: isOrderReady ? 1 : 0.55,
+                pointerEvents: isOrderReady ? "auto" : "none",
+              }}
             >
-              Order on WhatsApp
+              {isValidating
+                ? "Verifying cart…"
+                : !isOrderReady
+                  ? "Verify cart before ordering"
+                  : "Order on WhatsApp"}
             </a>
+            {validationNotice && (
+              <button
+                className="btn ghost dark"
+                onClick={() => void validateCart()}
+              >
+                Retry verification
+              </button>
+            )}
             <small>
               {isValidating
                 ? "Verifying current pricing & stock..."

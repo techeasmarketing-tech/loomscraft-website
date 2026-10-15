@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { wa } from "@/lib/store";
+import { wa } from "@/lib/whatsapp";
 import { getFaqs, getPage, getSettings } from "@/lib/sanity";
 import EnquiryForm from "@/components/EnquiryForm";
 
@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Params) {
 
   if (slug === "faqs") {
     return {
-      title: "Frequently Asked Questions | LOOMS Craftz",
+      title: "Frequently Asked Questions",
       description:
         "Common questions about ordering, bedsheet sizes, care instructions, and delivery.",
       alternates: { canonical: "/faqs" },
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Params) {
 
   if (slug === "contact") {
     return {
-      title: "Contact & Enquiries | LOOMS Craftz",
+      title: "Contact & Enquiries",
       description:
         "Get in touch with LOOMS Craftz for orders, custom sizes, stock questions, or WhatsApp assistance.",
       alternates: { canonical: "/contact" },
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Params) {
   if (!p) return {};
 
   return {
-    title: `${p.title} | LOOMS Craftz`,
+    title: p.title,
     description: (p.body || "").slice(0, 160),
     alternates: { canonical: `/${slug}` },
   };
@@ -87,7 +87,7 @@ export default async function P({ params }: Params) {
             Send an Online Enquiry
           </h2>
           <p className="lead">
-            Fill in your details below and our team will get back to you with availability and answers.
+            Prepare your enquiry and continue in WhatsApp to send it. This form does not deliver or store enquiries.
           </p>
           <EnquiryForm />
         </div>

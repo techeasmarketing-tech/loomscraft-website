@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Invalid signature", { status: 401 });
     revalidateTag("sanity");
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return new NextResponse(e.message, { status: 500 });
+  } catch (error) {
+    console.error("Sanity revalidation error", error);
+    return new NextResponse("Webhook processing failed", { status: 500 });
   }
 }

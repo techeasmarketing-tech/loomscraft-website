@@ -242,7 +242,7 @@ export default function ProductView({
                 }}
               >
                 Have questions about fabric, custom sizes, or bulk requirements?
-                Submit below and our team will get back to you.
+                Prepare your enquiry here, then continue in WhatsApp to send it.
               </p>
               <EnquiryForm
                 productSlug={p.slug}

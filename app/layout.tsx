@@ -1,21 +1,7 @@
-import { Cormorant_Garamond, Jost } from "next/font/google";
 import type { Metadata } from "next";
 
-const d = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-  variable: "--d",
-  display: "swap",
-});
-
-const b = Jost({
-  subsets: ["latin"],
-  variable: "--b",
-  display: "swap",
-});
-
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://loomscraftz.com";
+const isPreviewDeployment = process.env.VERCEL_ENV === "preview";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -55,14 +41,14 @@ export const metadata: Metadata = {
       "Premium bedsheets, fitted sheets, duvet covers and bedding sets, crafted for soft sleep.",
   },
   robots: {
-    index: true,
-    follow: true,
+    index: !isPreviewDeployment,
+    follow: !isPreviewDeployment,
   },
 };
 
 export default function Root({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${d.variable} ${b.variable}`}>
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

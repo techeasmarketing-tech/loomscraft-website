@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import ProductView from "@/components/ProductView";
 import { getProduct, getProducts } from "@/lib/sanity";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://loomscraftz.com";
+
 type Params = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Params) {
@@ -10,7 +12,7 @@ export async function generateMetadata({ params }: Params) {
   if (!p) return {};
 
   const mainImage = p.variants[0]?.images[0];
-  const title = `${p.name} | LOOMS Craftz`;
+  const title = p.name;
   const description =
     p.blurb || `Shop ${p.name} in premium cotton. Crafted for soft sleep.`;
 
@@ -82,7 +84,7 @@ export default async function Page({ params }: Params) {
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
-      url: `https://loomscraftz.com/product/${p.slug}`,
+      url: `${siteUrl}/product/${p.slug}`,
     })),
   };
 

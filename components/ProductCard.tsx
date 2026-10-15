@@ -8,7 +8,7 @@ import Tilt from "./Tilt";
 export default function ProductCard({ p }: { p: Product }) {
   const { wish, toggle } = useStore();
   const on = wish.includes(p.slug);
-  const [i, setI] = useState(0);
+  const [i, setI] = useState(Math.max(0, p.variants.findIndex((x) => x.inStock)));
   const v = p.variants[i] || p.variants[0];
 
   const price = v.price != null && v.price > 0 ? v.price : p.price;
