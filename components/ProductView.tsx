@@ -133,7 +133,7 @@ export default function ProductView({
           <div className="sw big">
             {p.variants.map((x, j) => (
               <button
-                key={x.sku || x.colour + j}
+                key={`${x.sku || x.colour}-${j}`}
                 aria-label={x.colour}
                 title={x.inStock ? x.colour : `${x.colour} (sold out)`}
                 className={`${j === vi ? "on" : ""} ${x.inStock ? "" : "out"}`}

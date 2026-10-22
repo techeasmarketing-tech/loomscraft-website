@@ -59,7 +59,7 @@ export default function ProductCard({ p }: { p: Product }) {
           <div className="sw">
             {p.variants.map((x, j) => (
               <button
-                key={x.sku || x.colour + j}
+                key={`${x.sku || x.colour}-${j}`}
                 aria-label={x.colour}
                 title={x.colour}
                 className={j === i ? "on" : ""}

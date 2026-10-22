@@ -1210,3 +1210,11 @@ html, body { overflow-x: clip; }
 .skeleton-line.short { width:60%; }
 @keyframes skeleton-shimmer { to { background-position:-200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skeleton-image,.skeleton-line { animation:none; } }
+
+/* Keep the product gallery in normal flow on tablet and phone widths. */
+@media (max-width: 900px) {
+  .pimg { position: static; top: auto; align-self: stretch; }
+}
+@media (max-width: 420px) {
+  .shop-action { min-width: 3rem; width: 3rem; min-height: 44px; padding: .35rem; margin: 0; letter-spacing: .04em; font-size: .62rem; }
+}

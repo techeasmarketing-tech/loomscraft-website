@@ -94,6 +94,7 @@ export default function Header({
             <span>Wishlist</span>
             <em>{wish.length}</em>
           </Link>
+          <Link className="shop-action" href="/collections">Shop</Link>
 
           <button
             className="burger"
