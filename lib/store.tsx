@@ -36,7 +36,7 @@ type StoreContextType = {
   totalMrp: number;
   totalSavings: number;
   count: number;
-  add: (p: Product, size: string, colour: string, qty?: number) => void;
+  add: (p: Product, size: string, colour: string, qty?: number, sku?: string) => void;
   setQty: (i: number, q: number) => void;
   removeLine: (i: number) => void;
   wish: string[];
@@ -109,19 +109,14 @@ export function Provider({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: currentCart.map(({ slug, size, colour, qty }) => ({
-            slug,
-            size,
-            colour,
-            qty,
-          })),
+          items: currentCart.map(({ slug, size, colour, qty, sku, price }) => ({ slug, size, colour, qty, sku, price })),
         }),
       });
 
       if (res.ok) {
         const data: CartValidationResponse = await res.json();
         if (cartRevisionRef.current !== revisionAtStart) return;
-        const updated: Line[] = data.items.map((item) => ({
+        const updated: Line[] = data.items.filter((item) => !item.isDeleted).map((item) => ({
           slug: item.slug,
           size: item.size,
           colour: item.colour,
@@ -174,8 +169,8 @@ export function Provider({
     if (open) void validateCart();
   }, [open, cartRevision, cart.length, validateCart]);
 
-  const add = (p: Product, size: string, colour: string, qty = 1) => {
-    const v = p.variants.find((x) => x.colour === colour) || p.variants[0];
+  const add = (p: Product, size: string, colour: string, qty = 1, sku?: string) => {
+    const v = p.variants.find((x) => sku && x.sku === sku) || p.variants.find((x) => x.colour.toLowerCase() === colour.toLowerCase()) || p.variants[0];
     if (!v || v.inStock === false || !Number.isInteger(qty) || qty < 1) return;
     const boundedQty = Math.min(99, qty);
     const effectivePrice =
@@ -185,7 +180,7 @@ export function Provider({
 
     setCart((c) => {
       const f = c.find(
-        (l) => l.slug === p.slug && l.size === size && l.colour === colour,
+        (l) => l.slug === p.slug && l.size === size && (l.sku === v.sku || l.colour.toLowerCase() === v.colour.toLowerCase()),
       );
       return f
         ? c.map((l) =>
@@ -246,22 +241,23 @@ export function Provider({
     v: { sku: l.sku, images: [l.image] },
   }));
 
-  const total = lines.reduce((a, l) => a + l.price * l.qty, 0);
-  const totalMrp = lines.reduce(
+  const purchasableLines = lines.filter((l) => l.inStock !== false);
+  const total = purchasableLines.reduce((a, l) => a + l.price * l.qty, 0);
+  const totalMrp = purchasableLines.reduce(
     (a, l) => a + (l.mrp && l.mrp > l.price ? l.mrp : l.price) * l.qty,
     0,
   );
   const totalSavings = Math.max(0, totalMrp - total);
-  const count = lines.reduce((a, l) => a + l.qty, 0);
+  const count = purchasableLines.reduce((a, l) => a + l.qty, 0);
   const isOrderReady =
-    lines.length > 0 &&
+    purchasableLines.length > 0 &&
     !isValidating &&
     !validationNotice &&
     validatedRevision === cartRevision;
 
   const order = () => {
     if (!isOrderReady) return "#";
-    const list = lines
+    const list = purchasableLines
       .map(
         (l, i) =>
           `${i + 1}. ${l.name}, ${l.colour} (${l.sku}), size ${l.size} x ${l.qty} = ${inr(l.price * l.qty)}${l.inStock === false ? " [FLAGGED: Out of stock]" : ""}`,

@@ -5,6 +5,7 @@ import type { Product } from "@/lib/data";
 import { useStore, inr, wa as waLink } from "@/lib/store";
 import ProductCard from "@/components/ProductCard";
 import EnquiryForm from "@/components/EnquiryForm";
+import SanityImage, { sanityImageUrl } from "@/components/SanityImage";
 
 export default function ProductView({
   p,
@@ -36,16 +37,17 @@ export default function ProductView({
     ? Math.round(((currentMrp - currentPrice) / currentMrp) * 100)
     : 0;
 
-  const currentImage = v.images[img] || v.images[0] || "/placeholder.jpg";
+  const currentImage = v.images[img] || v.images[0];
+  const mainImage = currentImage ? sanityImageUrl(currentImage, "max") : undefined;
 
   const rows = [
     ["Category", p.cat],
     ["Colour", v.colour],
-    ["Fabric", p.fabric || "Cotton sateen"],
-    ["Thread count", p.tc ? `${p.tc} TC` : "400 TC"],
-    ["Sizes", p.sizes?.length ? p.sizes.join(" / ") : "Double / Queen / King"],
-    ["Care", p.care || "Machine wash gentle, tumble dry low"],
-    ["SKU", v.sku || "N/A"],
+    ...(p.fabric ? [["Fabric", p.fabric]] : []),
+    ...(p.tc > 0 ? [["Thread count", `${p.tc} TC`]] : []),
+    ...(p.sizes?.length ? [["Sizes", p.sizes.join(" / ")]] : []),
+    ...(p.care ? [["Care", p.care]] : []),
+    ...(v.sku ? [["SKU", v.sku]] : []),
   ];
 
   return (
@@ -60,12 +62,7 @@ export default function ProductView({
 
       <div className="pdp">
         <div className="pimg">
-          <img
-            key={currentImage}
-            className="fade"
-            src={currentImage}
-            alt={`${p.name} in ${v.colour}`}
-          />
+          {mainImage ? <SanityImage key={currentImage} className="fade" src={mainImage} alt={`${p.name} in ${v.colour}`} width={1000} height={1000} priority sizes="(max-width: 900px) 100vw, 52vw" /> : <div className="image-placeholder main-placeholder" />}
           {v.images.length > 1 && (
             <div className="thumbs">
               {v.images.map((u, k) => (
@@ -75,7 +72,7 @@ export default function ProductView({
                   onClick={() => setImg(k)}
                   aria-label={`View image ${k + 1}`}
                 >
-                  <img src={u} alt="" />
+                  <SanityImage src={u} alt="" width={120} height={120} sizes="72px" />
                 </button>
               ))}
             </div>
@@ -182,11 +179,11 @@ export default function ProductView({
             <>
               <button
                 className="btn"
-                onClick={() => add(p, size, v.colour, qty)}
+                onClick={() => add(p, size, v.colour, qty, v.sku)}
               >
                 Add to bag
               </button>
-              <a
+              {whatsapp && <a
                 className="btn wa"
                 target="_blank"
                 rel="noreferrer"
@@ -195,9 +192,9 @@ export default function ProductView({
                 )}
               >
                 Order now on WhatsApp
-              </a>
+              </a>}
             </>
-          ) : (
+          ) : whatsapp ? (
             <a
               className="btn wa"
               target="_blank"
@@ -208,7 +205,7 @@ export default function ProductView({
             >
               Sold out: ask about restock
             </a>
-          )}
+          ) : null}
 
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <button className="btn ghost dark" onClick={() => toggle(p.slug)}>

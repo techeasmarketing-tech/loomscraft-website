@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
       if (typeof productSlug !== "string" || productSlug.length > 120) {
         errors.product = "The selected product is invalid.";
       } else {
-        verifiedProduct = await getProduct(productSlug);
+        verifiedProduct = await getProduct(productSlug, true);
         if (!verifiedProduct) {
           errors.product =
             "The selected product is no longer active in the catalogue.";
@@ -102,13 +102,14 @@ export async function POST(req: NextRequest) {
     };
 
     // Do not log submitted contact details or message content.
-    const settings = await getSettings();
+    const settings = await getSettings(true);
     const productNote = enquiryRecord.product
       ? ` regarding ${enquiryRecord.product.name} (${enquiryRecord.product.variantColour || "Standard"}, SKU: ${enquiryRecord.product.variantSku || "N/A"})`
       : "";
 
     const waText = `Hello LOOMS Craftz, I submitted an enquiry (Ref: ${enquiryId})${productNote}.\nName: ${enquiryRecord.name}\nMessage: ${enquiryRecord.message}`;
-    const waUrl = `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(waText)}`;
+    const digits = settings.whatsapp.replace(/\D/g, "");
+    const waUrl = digits ? `https://wa.me/${digits}?text=${encodeURIComponent(waText)}` : "";
 
     return NextResponse.json({
       ok: true,

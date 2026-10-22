@@ -69,14 +69,14 @@ export default async function P({ params }: Params) {
           </p>
           <p className="lead">Opening hours: {s.hours}</p>
           <div style={{ marginTop: "1rem" }}>
-            <a
+            {s.whatsapp && <a
               className="btn wa"
               href={wa("Hello LOOMS Craftz, I have an enquiry.", s.whatsapp)}
               target="_blank"
               rel="noreferrer"
             >
               Message directly on WhatsApp
-            </a>
+            </a>}
           </div>
         </div>
 

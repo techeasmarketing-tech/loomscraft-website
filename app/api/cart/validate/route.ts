@@ -41,29 +41,15 @@ export async function POST(req: NextRequest) {
           { status: 400 },
         );
       }
-      const product = await getProduct(item.slug);
+      const product = await getProduct(item.slug, true);
 
       if (!product) {
-        // Product no longer exists in CMS
+        // Deleted products are dropped from the validated cart.
         hasUnavailable = true;
-        validatedItems.push({
-          slug: item.slug,
-          size: item.size || "Standard",
-          colour: item.colour || "Standard",
-          qty: Math.max(1, Number(item.qty) || 1),
-          name: "Item no longer available",
-          sku: "N/A",
-          price: 0,
-          mrp: 0,
-          image: "",
-          inStock: false,
-          isDeleted: true,
-          priceChanged: false,
-        });
         continue;
       }
 
-      const variant = product.variants.find((v) => v.colour === item.colour);
+      const variant = product.variants.find((v) => v.sku && v.sku === (item as any).sku) || product.variants.find((v) => v.colour.toLowerCase() === item.colour.toLowerCase()) || product.variants[0];
       const validSize = product.sizes.includes(item.size);
       if (!variant || !validSize) {
         hasUnavailable = true;
@@ -112,8 +98,9 @@ export async function POST(req: NextRequest) {
         image: variant.images[0] || "",
         inStock,
         isDeleted: false,
-        priceChanged: false,
+        priceChanged: Number((item as any).price) !== livePrice,
       });
+      if (Number((item as any).price) !== livePrice) hasPriceChanges = true;
     }
 
     const subtotal = validatedItems.reduce(

@@ -277,9 +277,9 @@ export const NAV = [
         t: "Shop looks",
         k: [
           ["All bedding", "/collections"],
-          ["Featured", "/collections"],
-          ["Solid colours", "/collections"],
-          ["Prints & florals", "/collections"],
+          ["Featured", "/collections?sort=featured"],
+          ["Solid colours", "/collections?colour=Solid"],
+          ["Prints & florals", "/collections?colour=Prints"],
         ],
       },
     ],
@@ -318,10 +318,10 @@ export const NAV = [
       {
         t: "Bed sizes",
         k: [
-          ["Single / Twin", "/collections"],
-          ["Double", "/collections"],
-          ["Queen", "/collections"],
-          ["King", "/collections"],
+          ["Single / Twin", "/collections?size=Single"],
+          ["Double", "/collections?size=Double"],
+          ["Queen", "/collections?size=Queen"],
+          ["King", "/collections?size=King"],
         ],
       },
     ],

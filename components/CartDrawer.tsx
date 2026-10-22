@@ -1,5 +1,7 @@
 "use client";
+import { useEffect, useRef } from "react";
 import { useStore, inr } from "@/lib/store";
+import SanityImage from "@/components/SanityImage";
 
 export default function CartDrawer() {
   const {
@@ -16,7 +18,15 @@ export default function CartDrawer() {
     validationNotice,
     validateCart,
     isOrderReady,
+    whatsapp,
   } = useStore();
+
+  const drawerRef = useRef<HTMLElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (open) { returnFocusRef.current = document.activeElement as HTMLElement; drawerRef.current?.removeAttribute("inert"); }
+    else { drawerRef.current?.setAttribute("inert", ""); returnFocusRef.current?.focus(); }
+  }, [open]);
 
   return (
     <>
@@ -24,7 +34,7 @@ export default function CartDrawer() {
         className={`scrim ${open ? "on" : ""}`}
         onClick={() => setOpen(false)}
       />
-      <aside className={`drawer ${open ? "on" : ""}`} aria-hidden={!open}>
+      <aside ref={drawerRef} className={`drawer ${open ? "on" : ""}`} aria-hidden={!open}>
         <div className="dh">
           <h2>Your bag</h2>
           <button onClick={() => setOpen(false)}>Close</button>
@@ -64,7 +74,7 @@ export default function CartDrawer() {
                 key={l.slug + l.size + l.colour}
                 style={{ opacity: isOos ? 0.7 : 1 }}
               >
-                <img src={l.v.images[0] || "/placeholder.jpg"} alt={l.p.name} />
+                {l.v.images[0] ? <SanityImage src={l.v.images[0]} alt={`${l.p.name} in ${l.colour}`} width={140} height={175} sizes="70px" /> : <span className="image-placeholder" />}
                 <div>
                   <div
                     style={{
@@ -103,6 +113,7 @@ export default function CartDrawer() {
                       {inr(l.price)}
                     </span>
                   </small>
+                  {l.priceChanged && <span className="price-changed" role="status">Price updated</span>}
                   {isOos && (
                     <span
                       style={{
@@ -177,7 +188,7 @@ export default function CartDrawer() {
               <span>Total</span>
               <b>{inr(total)}</b>
             </div>
-            <a
+            {whatsapp && lines.some((l) => l.inStock !== false) && lines.length > 0 && <a
               className="btn wa"
               href={order()}
               target="_blank"
@@ -196,7 +207,7 @@ export default function CartDrawer() {
                 : !isOrderReady
                   ? "Verify cart before ordering"
                   : "Order on WhatsApp"}
-            </a>
+            </a>}
             {validationNotice && (
               <button
                 className="btn ghost dark"

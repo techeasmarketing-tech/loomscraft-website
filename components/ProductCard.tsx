@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Product } from "@/lib/data";
 import { useStore, inr } from "@/lib/store";
 import Tilt from "./Tilt";
+import SanityImage from "./SanityImage";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { wish, toggle } = useStore();
@@ -22,18 +23,14 @@ export default function ProductCard({ p }: { p: Product }) {
     <Tilt>
       <div className="card">
         <Link href={`/product/${p.slug}`} className="imgwrap">
-          <img
-            src={v.images[0] || "/placeholder.jpg"}
-            alt={`${p.name} in ${v.colour}`}
-            loading="lazy"
-          />
+          {v.images[0] ? <SanityImage src={v.images[0]} alt={`${p.name} in ${v.colour}`} fill sizes="(max-width: 600px) 48vw, (max-width: 900px) 32vw, 25vw" /> : <span className="image-placeholder" aria-hidden="true" />}
           <span className="sheen" />
           {!v.inStock && <span className="oos">Sold out</span>}
           {hasDiscount && v.inStock && (
             <span
               style={{
                 position: "absolute",
-                right: "0.8rem",
+                left: "0.8rem",
                 top: "0.8rem",
                 background: "var(--navy)",
                 color: "#ecd9b6",
