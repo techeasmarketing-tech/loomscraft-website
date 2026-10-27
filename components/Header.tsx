@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import SanityImage from "@/components/SanityImage";
 import { NAV } from "@/lib/data";
 import { useStore } from "@/lib/store";
 
@@ -19,7 +20,7 @@ export default function Header({
 
   // Dynamic navigation: inject live Sanity categories if present
   const dynamicNav = NAV.map((n) => {
-    if (n.l === "Bed linen" && categories?.length) {
+    if (n.l.toLowerCase() === "bed linen" && categories?.length) {
       return {
         ...n,
         g: [
@@ -93,16 +94,15 @@ export default function Header({
             <span>Wishlist</span>
             <em>{wish.length}</em>
           </Link>
-          <Link className="shop-action" href="/collections">
-            Shop
-          </Link>
+          <Link className="shop-action" href="/collections">Shop</Link>
+
           <button
             className="burger"
             onClick={() => setM(!m)}
             aria-label="Toggle navigation menu"
             aria-expanded={m}
           >
-            {m ? "Close" : "Menu"}
+            <span className="hamburger" aria-hidden="true">☰</span><span>{m ? "Close" : "Menu"}</span>
           </button>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function Header({
           <button
             key={n.l}
             className={o === i ? "act" : ""}
-            onMouseEnter={() => setO(i)}
+            onMouseEnter={() => { if (window.matchMedia("(hover: hover)").matches) setO(i); }}
             onClick={() => setO(o === i ? null : i)}
             aria-expanded={o === i}
           >
@@ -137,7 +137,7 @@ export default function Header({
             </div>
           </div>
           <div className="mimg">
-            <img src={dynamicNav[o].i} alt={dynamicNav[o].l} />
+            <SanityImage src={dynamicNav[o].i} alt={dynamicNav[o].l} fill sizes="300px" />
             <p>{dynamicNav[o].b}</p>
           </div>
         </div>

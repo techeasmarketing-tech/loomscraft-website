@@ -215,7 +215,7 @@ header {
   right: 3rem;
   background: var(--cream);
   display: grid;
-  grid-template-columns: 1fr 440px;
+  grid-template-columns: minmax(0, 1fr) 440px;
   gap: 3rem;
   padding: 2.5rem 3rem;
   box-shadow: 0 30px 60px -20px #111c3340;
@@ -409,7 +409,7 @@ header {
 }
 .cats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1.2rem;
 }
 .cat {
@@ -436,7 +436,7 @@ header {
 }
 .why-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
 }
 .why-card {
@@ -469,7 +469,7 @@ header {
 }
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
 }
 .room-card {
@@ -513,7 +513,7 @@ header {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2rem;
 }
 .more {
@@ -525,7 +525,7 @@ header {
 }
 .testimonials {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
 }
 .testimonial-card {
@@ -629,7 +629,7 @@ header {
 }
 .craft {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 5rem;
   align-items: center;
   padding: 6rem 3rem;
@@ -735,7 +735,7 @@ header {
 }
 .pdp {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 4rem;
   margin-bottom: 5rem;
 }
@@ -835,7 +835,7 @@ dt {
 }
 .li {
   display: grid;
-  grid-template-columns: 70px 1fr auto;
+  grid-template-columns: 70px minmax(0, 1fr) auto;
   gap: 1rem;
   padding: 1rem 0;
   border-bottom: 1px solid var(--line);
@@ -874,7 +874,7 @@ footer {
 }
 .fw {
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.5fr);
   gap: 4rem;
   max-width: 1400px;
   margin: auto;
@@ -972,16 +972,16 @@ footer a:hover {
     color: var(--mut);
   }
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
   }
   .cats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .craft,
   .pdp,
   .fw {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
   .pimg {
@@ -1156,4 +1156,65 @@ footer a:hover {
   font-size: 1.5rem;
   color: var(--navy);
   margin: 1.6rem 0 0.4rem;
+}
+
+/* Responsive audit fixes */
+html, body { overflow-x: clip; }
+.grid,.why-grid,.room-grid,.testimonials { grid-template-columns: repeat(4,minmax(0,1fr)); }
+.card,.why-card,.room-card,.testimonial-card { min-width: 0; }
+.imgwrap { aspect-ratio: 4/5; background: var(--cream); }
+.imgwrap img { object-fit: cover; }
+.sw { flex-wrap: wrap; min-width: 0; }
+.sw span { flex: 0 0 100%; min-width: 0; margin-left: 0; overflow-wrap: anywhere; }
+.chips { min-width: 0; }
+.chips button { white-space: normal; min-width: 0; overflow-wrap: anywhere; }
+.pimg > img { display:block; width:100%; height:auto; aspect-ratio: 1; object-fit: contain; background: var(--cream); }
+.image-placeholder { display:block; width:100%; height:100%; background:var(--cream); }
+.main-placeholder { aspect-ratio:1; }
+.filter-toggle { display:none; }
+.top { display:block; width:100%; text-align:center; }
+.top span:first-child { display:block; width:100%; }
+@media (max-width: 900px) {
+ .why-grid,.testimonials { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .room-grid { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,75vw); grid-template-columns:none; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:1rem; }
+ .room-card { scroll-snap-align:start; }
+ .burger { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; min-width:5.5rem; min-height:44px; padding:.55rem .75rem; border:1px solid var(--line); background:#fff; color:var(--navy); font-size:.75rem; letter-spacing:.08em; }
+ .header-action { min-width:44px; min-height:44px; padding:.35rem; }
+ .header-action span { display:none; }
+ .icons { gap:.4rem; }
+ .bar { margin-bottom:0; }
+ .collection-filters { display:none; }
+ .collection-filters.show { display:block; padding:.7rem; border:1px solid var(--line); background:#fff; }
+ .filter-toggle { display:inline-flex; min-height:44px; padding:.5rem 1rem; margin-bottom:1rem; border:1px solid var(--line); background:#fff; color:var(--navy); }
+ .category-chips { flex-wrap:nowrap; overflow-x:auto; white-space:nowrap; padding-bottom:.5rem; }
+ .category-chips button { flex:0 0 auto; white-space:nowrap; }
+ .pinfo h1 { margin-top:.5rem; }
+}
+@media (max-width: 560px) {
+ .why-grid,.testimonials { grid-template-columns:minmax(0,1fr); }
+ .room-grid { grid-auto-columns:75vw; }
+ .enquiry-grid { grid-template-columns:minmax(0,1fr)!important; }
+ .sec { padding-left:1rem; padding-right:1rem; }
+}
+
+.price-changed { display:block; color:#92400e; font-size:.72rem; margin:.2rem 0; }
+.room-card { position:relative; }
+.room-image { position:relative; height:260px; }
+.room-image img { object-fit:cover; }
+
+.skeleton-card { min-width:0; background:#fff; }
+.skeleton-image,.skeleton-line { background:linear-gradient(90deg,#eee7dc 25%,#f8f5f0 50%,#eee7dc 75%); background-size:200% 100%; animation:skeleton-shimmer 1.4s infinite; }
+.skeleton-image { aspect-ratio:4/5; }
+.skeleton-line { height:.8rem; margin:.8rem 0; }
+.skeleton-line.short { width:60%; }
+@keyframes skeleton-shimmer { to { background-position:-200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skeleton-image,.skeleton-line { animation:none; } }
+
+/* Keep the product gallery in normal flow on tablet and phone widths. */
+@media (max-width: 900px) {
+  .pimg { position: static; top: auto; align-self: stretch; }
+}
+@media (max-width: 420px) {
+  .shop-action { min-width: 3rem; width: 3rem; min-height: 44px; padding: .35rem; margin: 0; letter-spacing: .04em; font-size: .62rem; }
 }

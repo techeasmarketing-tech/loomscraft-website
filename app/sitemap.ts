@@ -1,8 +1,10 @@
 import { MetadataRoute } from "next";
 import { getAllProductSlugs, getAllPageSlugs } from "@/lib/sanity";
+import { siteUrl } from "@/lib/site-url";
+
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://loomscraftz.com";
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -115,15 +117,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   } catch (err) {
     console.error("Failed to generate dynamic sitemap routes:", err);
-    return staticRoutes.filter((route) => {
-      const slug = new URL(route.url).pathname.replace(/^\/+|\/+$/g, "");
-      return ![
-        "our-craft",
-        "delivery-information",
-        "returns-and-exchanges",
-        "privacy-policy",
-        "terms",
-      ].includes(slug);
-    });
+    return staticRoutes;
   }
 }

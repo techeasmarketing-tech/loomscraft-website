@@ -36,6 +36,8 @@ export type CartItemInput = {
   size: string;
   colour: string;
   qty: number;
+  sku?: string;
+  price?: number;
 };
 
 export type CartValidationItem = {

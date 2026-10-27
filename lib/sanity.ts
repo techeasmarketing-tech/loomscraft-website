@@ -3,25 +3,43 @@ import { projectId, dataset, apiVersion } from "@/sanity/env";
 import { HERO, CRAFT } from "./data";
 import type { Product, HomeContent, Settings, Faq, PageDoc } from "./types";
 
-const client = createClient({ projectId, dataset, apiVersion, useCdn: false });
+const client = createClient({ projectId, dataset, apiVersion, useCdn: false, perspective: "published" });
 
 const f = async <T>(
   q: string,
   p: Record<string, unknown> = {},
+  live = false,
 ): Promise<T | null> => {
   try {
     return await client.fetch<T>(q, p, {
-      next: { tags: ["sanity"], revalidate: 3600 },
+      ...(live ? { cache: "no-store" as const } : { next: { tags: ["sanity"], revalidate: 3600 } }),
     });
   } catch (err) {
     console.error("Sanity query error for:", q, err);
     // Do not disguise a CMS outage as an empty catalogue or missing document.
     throw new Error("Sanity content request failed", { cause: err });
   }
-};
+ };
 
-const im = (u?: string, w = 1400) =>
-  u ? `${u}?w=${w}&auto=format&q=80` : undefined;
+export const fetchLive = <T>(q: string, p: Record<string, unknown> = {}) => f<T>(q, p, true);
+
+const imageUrl = (image: any, width: number, fit: "crop" | "max" = "crop") => {
+  const assetUrl = typeof image === "string" ? image : image?.asset?.url;
+  if (!assetUrl) return undefined;
+  const h = fit === "crop" ? Math.round(width * 1.25) : undefined;
+  const hotspot = image?.hotspot;
+  const crop = image?.crop;
+  const dimensions = image?.asset?.dimensions;
+  const params = new URLSearchParams({ w: String(width), fit, auto: "format", q: "80" });
+  if (h) params.set("h", String(h));
+  if (fit === "crop" && crop && dimensions?.width && dimensions?.height) {
+    const left = Math.round(crop.left * dimensions.width), top = Math.round(crop.top * dimensions.height);
+    const width = Math.round(dimensions.width * (1 - crop.left - crop.right)), height = Math.round(dimensions.height * (1 - crop.top - crop.bottom));
+    if (width > 0 && height > 0) params.set("rect", `${left},${top},${width},${height}`);
+  }
+  if (fit === "crop" && hotspot) { params.set("fp-x", String(hotspot.x)); params.set("fp-y", String(hotspot.y)); params.set("fp-z", String(hotspot.width || 1)); }
+  return `${assetUrl}?${params.toString()}`;
+};
 
 const PF = `{
   "slug": slug.current,
@@ -40,7 +58,7 @@ const PF = `{
     "colour": colour,
     "hex": hex.hex,
     sku,
-    "images": images[].asset->url,
+    "images": images[]{"asset": asset->{url,"dimensions":metadata.dimensions}, hotspot, crop},
     "inStock": coalesce(inStock, true),
     price,
     mrp
@@ -67,7 +85,7 @@ const clean = (p: any): Product | null => {
         ...v,
         hex: v.hex || "#cccccc",
         images: (v.images?.length ? v.images : fallbackImages).map(
-          (u: string) => im(u, 1200) || u,
+          (image: any) => imageUrl(image, 1200, "crop") || "",
         ),
         price: effectivePrice,
         mrp: effectiveMrp,
@@ -98,11 +116,9 @@ export const getProducts = async (): Promise<Product[]> => {
   return (data || []).map(clean).filter(Boolean) as Product[];
 };
 
-export const getProduct = async (slug: string): Promise<Product | null> => {
-  const p = await f<any>(
-    `*[_type=="product" && slug.current==$slug][0] ${PF}`,
-    { slug },
-  );
+export const getProduct = async (slug: string, live = false): Promise<Product | null> => {
+  const query = `*[_type=="product" && slug.current==$slug][0] ${PF}`;
+  const p = live ? await fetchLive<any>(query, { slug }) : await f<any>(query, { slug });
   return p ? clean(p) : null;
 };
 
@@ -136,10 +152,9 @@ const SD: Settings = {
   hours: "Mon–Sat 10:00 AM – 7:00 PM · Sun 11:00 AM – 5:00 PM",
 };
 
-export const getSettings = async (): Promise<Settings> => {
-  const data = await f<any>(
-    `*[_id=="siteSettings"][0]{tagline,about,phone,whatsapp,address,hours}`,
-  );
+export const getSettings = async (live = false): Promise<Settings> => {
+  const query = `*[_id=="siteSettings"][0]{tagline,about,phone,whatsapp,address,hours}`;
+  const data = live ? await fetchLive<any>(query) : await f<any>(query);
   const defined = Object.fromEntries(
     Object.entries(data || {}).filter(([, v]) => v),
   );
@@ -164,7 +179,7 @@ const HD: HomeContent = {
 export const getHome = async (): Promise<HomeContent> => {
   const h =
     (await f<any>(
-      `*[_id=="homePage"][0]{kicker,headline1,headline2,subtext,craftTitle,craftText,"heroImage":heroImage.asset->url,"craftImage":craftImage.asset->url,"testimonials":coalesce(testimonials,[])}`,
+      `*[_id=="homePage"][0]{kicker,headline1,headline2,subtext,craftTitle,craftText,"heroImage":heroImage{"asset":asset->{url,"dimensions":metadata.dimensions},hotspot,crop},"craftImage":craftImage{"asset":asset->{url,"dimensions":metadata.dimensions},hotspot,crop},"testimonials":coalesce(testimonials,[])}`,
     )) || {};
   const defined = Object.fromEntries(
     Object.entries(h).filter(([, v]) => v != null),
@@ -172,8 +187,8 @@ export const getHome = async (): Promise<HomeContent> => {
   return {
     ...HD,
     ...defined,
-    heroImage: im(h.heroImage, 2000) || HERO,
-    craftImage: im(h.craftImage, 1200) || CRAFT,
+    heroImage: imageUrl(h.heroImage, 2000, "max") || HERO,
+    craftImage: imageUrl(h.craftImage, 1200, "crop") || CRAFT,
     testimonials: h.testimonials || [],
   } as HomeContent;
 };

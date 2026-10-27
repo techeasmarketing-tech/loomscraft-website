@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import ProductView from "@/components/ProductView";
 import { getProduct, getProducts } from "@/lib/sanity";
+import { siteUrl } from "@/lib/site-url";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://loomscraftz.com";
 
 type Params = { params: Promise<{ slug: string }> };
 

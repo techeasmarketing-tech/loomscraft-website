@@ -97,14 +97,14 @@ export default function EnquiryForm({
           {result.message} Reference: <code>{result.enquiryId}</code>.
         </p>
         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-          <a
+          {result.whatsappUrl && <a
             className="btn wa"
             href={result.whatsappUrl}
             target="_blank"
             rel="noreferrer"
           >
             Chat directly on WhatsApp
-          </a>
+          </a>}
           <button
             className="btn ghost dark"
             onClick={() => {
@@ -136,61 +136,73 @@ export default function EnquiryForm({
       )}
 
       <div>
-        <label style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
+        <label htmlFor="enquiry-name" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
           Your Name *
         </label>
         <input
+          id="enquiry-name"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "error-name" : undefined}
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Priya Sharma"
           style={{ width: "100%", padding: "0.9rem 1rem", border: errors.name ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit" }}
         />
-        {errors.name && <span style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.name}</span>}
+        {errors.name && <span id="error-name" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.name}</span>}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+      <div className="enquiry-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
-          <label style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
+          <label htmlFor="enquiry-contact" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
             Phone / WhatsApp *
           </label>
           <input
+            id="enquiry-contact"
+            aria-invalid={!!errors.contact}
+            aria-describedby={errors.contact ? "error-contact" : undefined}
             type="tel"
             value={contact}
             onChange={(e) => setContact(e.target.value)}
             placeholder="e.g. 9876543210"
             style={{ width: "100%", padding: "0.9rem 1rem", border: errors.contact ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit" }}
           />
-          {errors.contact && <span style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.contact}</span>}
+          {errors.contact && <span id="error-contact" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.contact}</span>}
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
+          <label htmlFor="enquiry-email" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
             Email (Optional)
           </label>
           <input
+            id="enquiry-email"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "error-email" : undefined}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. priya@example.com"
             style={{ width: "100%", padding: "0.9rem 1rem", border: errors.email ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit" }}
           />
-          {errors.email && <span style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.email}</span>}
+          {errors.email && <span id="error-email" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.email}</span>}
         </div>
       </div>
 
       <div>
-        <label style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
+        <label htmlFor="enquiry-message" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
           Message / Requirement *
         </label>
         <textarea
+          id="enquiry-message"
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "error-message" : undefined}
           rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Tell us about your requirements, custom size needs, or questions..."
           style={{ width: "100%", padding: "0.9rem 1rem", border: errors.message ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit", resize: "vertical" }}
         />
-        {errors.message && <span style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.message}</span>}
+        {errors.message && <span id="error-message" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.message}</span>}
       </div>
 
       <button type="submit" className="btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>

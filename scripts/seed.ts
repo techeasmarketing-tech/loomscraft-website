@@ -1,6 +1,11 @@
 import { createClient } from "next-sanity";
 import { randomUUID } from "node:crypto";
 import { PRODUCTS, CATS, OCC, HERO, CRAFT, TESTIMONIALS } from "../lib/data";
+if (!process.argv.includes("--force")) {
+  console.error("Refusing to run seed without --force. This script uses createOrReplace and invents MRP as price × 1.3.");
+  process.exit(1);
+}
+console.warn("WARNING: --force enables createOrReplace and generated MRP values (price × 1.3).");
 const token = process.env.SANITY_API_WRITE_TOKEN;
 if (!token) throw new Error("Set SANITY_API_WRITE_TOKEN in .env.local first.");
 const client = createClient({

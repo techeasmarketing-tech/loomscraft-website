@@ -6,6 +6,7 @@ import { HERO, CRAFT, cover, WHY_CHOOSE, ROOM_STYLES } from "@/lib/data";
 import type { Product } from "@/lib/data";
 import type { HomeContent } from "@/lib/types";
 import ProductCard from "@/components/ProductCard";
+import SanityImage from "@/components/SanityImage";
 const line = {
   hidden: { y: "110%" },
   show: (i: number) => ({
@@ -45,11 +46,7 @@ export default function HomeView({
   return (
     <>
       <section className="hero" ref={r}>
-        <motion.img
-          src={home.heroImage || HERO}
-          alt=""
-          style={{ y, scale: s }}
-        />
+        <motion.div style={{ y, scale: s, position: "absolute", inset: 0 }}><SanityImage src={home.heroImage || HERO} alt="LOOMS Craftz bedding in a softly styled bedroom" fill priority sizes="100vw" /></motion.div>
         <div className="shade" />
         <motion.div className="hc" style={{ opacity: op }}>
           <p className="kick">{home.kicker}</p>
@@ -98,7 +95,7 @@ export default function HomeView({
                 href={`/collections?category=${encodeURIComponent(c)}`}
                 className="cat"
               >
-                <img src={imgUrl} alt={c} />
+                <SanityImage src={imgUrl} alt={c} fill sizes="(max-width: 600px) 48vw, 20vw" />
                 <span>{c}</span>
               </Link>
             );
@@ -107,7 +104,7 @@ export default function HomeView({
       </section>
       <section className="sec">
         <div className="narrow">
-          <p className="kick dark">Why choose Loomz</p>
+          <p className="kick dark">Why choose LOOMS Craftz</p>
           <h2 className="st">Thoughtful design for softer, easier nights.</h2>
         </div>
         <div className="why-grid">
@@ -125,7 +122,7 @@ export default function HomeView({
         <div className="room-grid">
           {ROOM_STYLES.map((room) => (
             <Link key={room.name} href={room.href} className="room-card">
-              <img src={room.image} alt={room.name} />
+              <div className="room-image"><SanityImage src={room.image} alt={room.name} fill sizes="(max-width: 600px) 75vw, 25vw" /></div>
               <div className="room-copy">
                 <span>Shop now</span>
                 <h3>{room.name}</h3>
@@ -172,7 +169,7 @@ export default function HomeView({
       </section>
       <section className="craft" ref={cr}>
         <motion.div className="cimg" style={{ rotateY: ry, y: cy }}>
-          <img src={home.craftImage || CRAFT} alt="" />
+          <SanityImage src={home.craftImage || CRAFT} alt="" width={800} height={1000} sizes="(max-width: 900px) 100vw, 50vw" />
         </motion.div>
         <div className="ct">
           <h2>{home.craftTitle}</h2>
