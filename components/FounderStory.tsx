@@ -44,8 +44,9 @@ const PILLARS = [
 ];
 
 export default function FounderStory({ s }: { s: Settings }) {
-    const name = (s.founderName || "").trim();
-    const role = (s.founderRole || "").trim() || "Founder, LOOMS Craftz";
+    const name = (s.founderName || "Devang Bhardwaj").trim();
+    // const signatureName = name || "Devang Bhardwaj";
+    const role = (s.founderRole || "").trim() || "Founder, LOOM Craftz";
     const quote = (s.founderQuote || "").trim() || DEFAULT_QUOTE;
     const story = (s.founderStory || "")
         .split(/\n\s*\n/)
@@ -72,7 +73,7 @@ export default function FounderStory({ s }: { s: Settings }) {
                         ) : (
                             <div className="founder-mono">
                                 <Image
-                                    src="/logo.png"
+                                    src="/founder.png"
                                     alt="LOOMS Craftz"
                                     width={940}
                                     height={672}
@@ -81,6 +82,10 @@ export default function FounderStory({ s }: { s: Settings }) {
                             </div>
                         )}
                     </ImageReveal>
+                    {/* Signature Section, will be displayed below the image */}
+                    {/* <span className="founder-photo-signature" aria-label={`${signatureName}, founder signature`}>
+                        {signatureName}
+                    </span> */}
                     <Reveal delay={0.4}>
                         <div className="founder-badge">
                             <strong>{name || "Our Founder"}</strong>

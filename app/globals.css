@@ -2325,6 +2325,19 @@ footer a:hover {
   object-fit: cover;
 }
 
+/* Founder Signature, will add later */
+/* .founder-photo-signature {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 2;
+  color: var(--cream);
+  font: italic 400 clamp(2rem, 4vw, 3rem) "Segoe Script", "Brush Script MT", cursive;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 55%);
+  transform: rotate(-7deg);
+  pointer-events: none;
+} */
+
 .founder-mono {
   position: absolute;
   inset: 0;
