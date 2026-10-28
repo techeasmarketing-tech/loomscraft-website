@@ -15,6 +15,14 @@ export type Settings = {
   about: string;
   phone: string;
   whatsapp: string;
+  instagram?: string;
+  brandTagline?: string;
+  footerTagline?: string;
+  founderName?: string;
+  founderRole?: string;
+  founderPhoto?: string;
+  founderQuote?: string;
+  founderStory?: string;
   address: string;
   hours: string;
 };

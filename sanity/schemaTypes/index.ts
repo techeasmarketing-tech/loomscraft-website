@@ -199,10 +199,61 @@ const siteSettings = defineType({
       name: "whatsapp",
       title: "WhatsApp number",
       description:
-        "Digits with country code, no + or spaces. Example: 919870368999",
+        "Digits with country code, no + or spaces. Example: 919639999950",
       type: "string",
       validation: (r) =>
         r.required().regex(/^\d{10,15}$/, { name: "digits only" }),
+    }),
+    defineField({
+      name: "instagram",
+      title: "Instagram",
+      description:
+        "Instagram handle (e.g. loomscraftz) or full profile link. Leave empty to hide the floating Instagram button.",
+      type: "string",
+    }),
+    defineField({
+      name: "brandTagline",
+      title: "Navbar tagline",
+      description: "Small line shown under the logo in the header.",
+      type: "string",
+    }),
+    defineField({
+      name: "footerTagline",
+      title: "Footer tagline",
+      description: "Small line shown under the logo in the footer.",
+      type: "string",
+    }),
+    defineField({
+      name: "founderName",
+      title: "Founder story: name",
+      description: "Shown on the Our Craft page. Leave empty to use the default draft text.",
+      type: "string",
+    }),
+    defineField({
+      name: "founderRole",
+      title: "Founder story: role",
+      description: "Example: Founder, LOOMS Craftz",
+      type: "string",
+    }),
+    defineField({
+      name: "founderPhoto",
+      title: "Founder story: photo",
+      description: "Portrait photo works best (4:5).",
+      type: "image",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "founderQuote",
+      title: "Founder story: pull quote",
+      type: "text",
+      rows: 3,
+    }),
+    defineField({
+      name: "founderStory",
+      title: "Founder story: text",
+      description: "Leave a blank line between paragraphs.",
+      type: "text",
+      rows: 12,
     }),
     defineField({ name: "address", type: "string" }),
     defineField({ name: "hours", title: "Opening hours", type: "string" }),

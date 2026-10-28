@@ -93,8 +93,9 @@ async function main() {
     tagline: "Premium bedsheets, soft sleep, crafted layers",
     about:
       "Premium bedsheets, fitted sheets, duvet covers and bedding sets, designed for soft sleep and beautiful bedrooms. Browse online, then order on WhatsApp.",
-    phone: "098703 68999",
-    whatsapp: "919870368999",
+    phone: "96399 99950",
+    whatsapp: "919639999950",
+    instagram: "https://www.instagram.com/loom_craftz/",
     address: "Noida, Uttar Pradesh 201301",
     hours: "Mon–Sat 10:00 AM – 7:00 PM · Sun 11:00 AM – 5:00 PM",
   });

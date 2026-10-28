@@ -24,7 +24,17 @@ export default function ProductCard({ p }: { p: Product }) {
       <div className="card">
         <Link href={`/product/${p.slug}`} className="imgwrap">
           {v.images[0] ? <SanityImage src={v.images[0]} alt={`${p.name} in ${v.colour}`} fill sizes="(max-width: 600px) 48vw, (max-width: 900px) 32vw, 25vw" /> : <span className="image-placeholder" aria-hidden="true" />}
+          {v.images[1] && (
+            <SanityImage
+              className="alt-img"
+              src={v.images[1]}
+              alt=""
+              fill
+              sizes="(max-width: 600px) 48vw, (max-width: 900px) 32vw, 25vw"
+            />
+          )}
           <span className="sheen" />
+          <span className="quick">View details</span>
           {!v.inStock && <span className="oos">Sold out</span>}
           {hasDiscount && v.inStock && (
             <span

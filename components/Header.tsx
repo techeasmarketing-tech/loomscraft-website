@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import SanityImage from "@/components/SanityImage";
 import { NAV } from "@/lib/data";
 import { useStore } from "@/lib/store";
@@ -8,15 +9,32 @@ import { useStore } from "@/lib/store";
 export default function Header({
   phone,
   tagline,
+  brandLine,
   categories,
 }: {
   phone: string;
   tagline?: string;
+  brandLine?: string;
   categories?: string[];
 }) {
   const [o, setO] = useState<number | null>(null);
   const [m, setM] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { count, setOpen, wish } = useStore();
+
+  // Compact the header (hide utility bar, shrink logo) once the page scrolls.
+  useEffect(() => {
+    // Hysteresis: collapse past 160px, expand only back near the top (24px).
+    // A single threshold made the header flip back and forth (layout jump)
+    // because collapsing it changes the page height and thus scrollY.
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled((prev) => (prev ? y > 24 : y > 160));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Dynamic navigation: inject live Sanity categories if present
   const dynamicNav = NAV.map((n) => {
@@ -39,7 +57,10 @@ export default function Header({
   });
 
   return (
-    <header onMouseLeave={() => setO(null)}>
+    <header
+      className={scrolled ? "scrolled" : ""}
+      onMouseLeave={() => setO(null)}
+    >
       <div className="top">
         <span>{tagline || "Premium bedsheets, soft sleep, crafted layers"}</span>
         <span>
@@ -50,9 +71,16 @@ export default function Header({
         </span>
       </div>
       <div className="bar">
-        <Link href="/" className="logo">
-          <b>LOOMS</b>
-          <i>Craftz</i>
+        <Link href="/" className="logo" aria-label="LOOMS Craftz home">
+          <Image
+            src="/logo.png"
+            alt="LOOMS Craftz"
+            width={940}
+            height={672}
+            priority
+            sizes="(max-width: 900px) 70px, 110px"
+          />
+          {brandLine && <span className="logo-tag">{brandLine}</span>}
         </Link>
         <div className="icons">
           <button

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { wa } from "@/lib/whatsapp";
 import { getFaqs, getPage, getSettings } from "@/lib/sanity";
 import EnquiryForm from "@/components/EnquiryForm";
+import FounderStory from "@/components/FounderStory";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -27,7 +28,16 @@ export async function generateMetadata({ params }: Params) {
   }
 
   const p = await getPage(slug);
-  if (!p) return {};
+  if (!p) {
+    return slug === "our-craft"
+      ? {
+        title: "Our Craft & Story",
+        description:
+          "The story behind LOOMS Craftz: fabric, finish and calm bedrooms, and the people behind it.",
+        alternates: { canonical: "/our-craft" },
+      }
+      : {};
+  }
 
   return {
     title: p.title,
@@ -96,6 +106,29 @@ export default async function P({ params }: Params) {
   }
 
   const p = await getPage(slug);
+
+  if (slug === "our-craft") {
+    const s = await getSettings();
+    return (
+      <>
+        {p && (
+          <div className="sec narrow">
+            <h1 className="st">{p.title}</h1>
+            {(p.body || "")
+              .split(/\n\s*\n/)
+              .filter(Boolean)
+              .map((x, i) => (
+                <p key={i} className="lead">
+                  {x}
+                </p>
+              ))}
+          </div>
+        )}
+        <FounderStory s={s} />
+      </>
+    );
+  }
+
   if (!p) notFound();
 
   return (

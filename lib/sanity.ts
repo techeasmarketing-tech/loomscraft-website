@@ -19,7 +19,7 @@ const f = async <T>(
     // Do not disguise a CMS outage as an empty catalogue or missing document.
     throw new Error("Sanity content request failed", { cause: err });
   }
- };
+};
 
 export const fetchLive = <T>(q: string, p: Record<string, unknown> = {}) => f<T>(q, p, true);
 
@@ -94,16 +94,16 @@ const clean = (p: any): Product | null => {
 
   return variants.length
     ? {
-        ...p,
-        price: basePrice,
-        mrp: baseMrp,
-        tc: p.tc ?? 0,
-        fabric: p.fabric ?? "",
-        care: p.care ?? "",
-        blurb: p.blurb ?? "",
-        featured: Boolean(p.featured),
-        variants,
-      }
+      ...p,
+      price: basePrice,
+      mrp: baseMrp,
+      tc: p.tc ?? 0,
+      fabric: p.fabric ?? "",
+      care: p.care ?? "",
+      blurb: p.blurb ?? "",
+      featured: Boolean(p.featured),
+      variants,
+    }
     : null;
 };
 
@@ -146,14 +146,18 @@ const SD: Settings = {
   tagline: "Premium bedsheets, soft sleep, crafted layers",
   about:
     "Premium bedsheets, fitted sheets, duvet covers and bedding sets, designed for soft sleep and beautiful bedrooms. Browse online, then order on WhatsApp.",
-  phone: "098703 68999",
-  whatsapp: "919870368999",
+  phone: "96399 99950",
+  whatsapp: "919639999950",
+  // Instagram handle or full link. Leave empty to hide the button (or set it in Sanity > Site settings).
+  instagram: "https://www.instagram.com/loom_craftz/",
+  brandTagline: "Where Luxury Meets Calm",
+  footerTagline: "A Venture of Savade Pvt Ltd",
   address: "Noida, Uttar Pradesh 201301",
   hours: "Mon–Sat 10:00 AM – 7:00 PM · Sun 11:00 AM – 5:00 PM",
 };
 
 export const getSettings = async (live = false): Promise<Settings> => {
-  const query = `*[_id=="siteSettings"][0]{tagline,about,phone,whatsapp,address,hours}`;
+  const query = `*[_id=="siteSettings"][0]{tagline,about,phone,whatsapp,instagram,address,hours,brandTagline,footerTagline,founderName,founderRole,founderQuote,founderStory,"founderPhoto":founderPhoto{"asset":asset->{url,"dimensions":metadata.dimensions},hotspot,crop}}`;
   const data = live ? await fetchLive<any>(query) : await f<any>(query);
   const defined = Object.fromEntries(
     Object.entries(data || {}).filter(([, v]) => v),
@@ -161,6 +165,7 @@ export const getSettings = async (live = false): Promise<Settings> => {
   return {
     ...SD,
     ...defined,
+    founderPhoto: imageUrl(data?.founderPhoto, 1000, "crop"),
   };
 };
 
