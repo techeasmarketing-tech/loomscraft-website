@@ -26,14 +26,14 @@ export async function generateMetadata({ params }: Params) {
       title,
       description,
       url: `/product/${slug}`,
-      siteName: "LOOMS Craftz",
+      siteName: "Loom Craftz",
       images: mainImage
         ? [
             {
               url: mainImage,
               width: 1200,
               height: 1200,
-              alt: `${p.name} by LOOMS Craftz`,
+              alt: `${p.name} by Loom Craftz`,
             },
           ]
         : [],
@@ -71,7 +71,7 @@ export default async function Page({ params }: Params) {
     sku: p.variants[0]?.sku || p.slug,
     brand: {
       "@type": "Brand",
-      name: "LOOMS Craftz",
+      name: "Loom Craftz",
     },
     offers: p.variants.map((v) => ({
       "@type": "Offer",

@@ -71,10 +71,10 @@ export default function Header({
         </span>
       </div>
       <div className="bar">
-        <Link href="/" className="logo" aria-label="LOOMS Craftz home">
+        <Link href="/" className="logo" aria-label="Loom Craftz home">
           <Image
             src="/logo.png"
-            alt="LOOMS Craftz"
+            alt="Loom Craftz"
             width={940}
             height={672}
             priority
@@ -123,6 +123,7 @@ export default function Header({
             <em>{wish.length}</em>
           </Link>
           <Link className="shop-action" href="/collections">Shop</Link>
+          <Link className="contact-action" href="/contact">Contact us</Link>
 
           <button
             className="burger"
@@ -207,10 +208,11 @@ export default function Header({
             </Link>
             <Link
               href="/contact"
+              className="mobile-contact"
               onClick={() => setM(false)}
               style={{ display: "block", padding: "0.5rem 0" }}
             >
-              Contact
+              Contact us
             </Link>
           </div>
         </div>

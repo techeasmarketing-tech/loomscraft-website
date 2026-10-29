@@ -6,7 +6,7 @@ import { getSettings, getCategories, getAllPageSlugs } from "@/lib/sanity";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import ScrollProgress from "@/components/ScrollProgress";
-import FloatingContact from "@/components/FloatingContact";
+// import FloatingContact from "@/components/FloatingContact";
 
 export default async function SiteLayout({
   children,
@@ -40,18 +40,20 @@ export default async function SiteLayout({
       />
       <main>{children}</main>
       <CartDrawer />
+      {/* Temporarily hidden at the client's request; keep for possible reuse.
       <FloatingContact
         phone={s.phone}
         whatsapp={s.whatsapp}
         instagram={s.instagram}
       />
+      */}
       <footer>
         <div className="fw">
           <div>
             <Image
               className="foot-logo"
               src="/logo.png"
-              alt="LOOMS Craftz"
+              alt="Loom Craftz"
               width={940}
               height={672}
               sizes="160px"
@@ -121,7 +123,10 @@ export default async function SiteLayout({
               Phone:{" "}
               <a href={`tel:${s.phone.replace(/[^\d+]/g, "")}`}>{s.phone}</a>
             </p>
-            <p>{s.hours}</p>
+            <p>
+              Email: <a href="mailto:info@loomcraftz.com">info@loomcraftz.com</a>
+            </p>
+            <Link className="btn footer-cta" href="/contact">Contact us</Link>
             {(publishedPages.has("delivery-information") ||
               publishedPages.has("returns-and-exchanges")) && (
                 <div style={{ marginTop: "1rem" }}>
@@ -147,7 +152,7 @@ export default async function SiteLayout({
         </div>
         <div className="fb">
           <span>
-            © {new Date().getFullYear()} LOOMS Craftz. All rights reserved.
+            © {new Date().getFullYear()} Loom Craftz. All rights reserved.
           </span>
           {publishedPages.has("privacy-policy") && (
             <Link href="/privacy-policy">Privacy Policy</Link>

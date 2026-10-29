@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { wa } from "@/lib/whatsapp";
-import { getFaqs, getPage, getSettings } from "@/lib/sanity";
+import { getAllPageSlugs, getFaqs, getPage, getSettings } from "@/lib/sanity";
 import EnquiryForm from "@/components/EnquiryForm";
 import FounderStory from "@/components/FounderStory";
 
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: Params) {
     return {
       title: "Contact & Enquiries",
       description:
-        "Get in touch with LOOMS Craftz for orders, custom sizes, stock questions, or WhatsApp assistance.",
+        "Get in touch with Loom Craftz for orders, custom sizes, stock questions, or WhatsApp assistance.",
       alternates: { canonical: "/contact" },
     };
   }
@@ -33,7 +32,7 @@ export async function generateMetadata({ params }: Params) {
       ? {
         title: "Our Craft & Story",
         description:
-          "The story behind LOOMS Craftz: fabric, finish and calm bedrooms, and the people behind it.",
+          "The story behind Loom Craftz: fabric, finish and calm bedrooms, and the people behind it.",
         alternates: { canonical: "/our-craft" },
       }
       : {};
@@ -65,28 +64,27 @@ export default async function P({ params }: Params) {
   }
 
   if (slug === "contact") {
-    const s = await getSettings();
+    const [s, pageSlugs] = await Promise.all([getSettings(), getAllPageSlugs()]);
+    const termsAvailable = pageSlugs.includes("terms");
     return (
       <div className="sec narrow">
         <h1 className="st">Contact & Enquiries</h1>
         <div style={{ marginBottom: "2rem" }}>
           <p className="lead" style={{ fontWeight: 500, color: "var(--navy)" }}>
-            LOOMS Craftz Studio
+            Loom Craftz Studio
           </p>
-          <p className="lead">{s.address}</p>
+          <p className="lead">Meerut, Uttar Pradesh</p>
           <p className="lead">
-            Phone: <a href={`tel:${s.phone.replace(/[^\d+]/g, "")}`}>{s.phone}</a>
+            Phone:{" "}
+            <a href={`tel:${s.phone.replace(/[^\d+]/g, "")}`}>{s.phone}</a>
           </p>
-          <p className="lead">Opening hours: {s.hours}</p>
-          <div style={{ marginTop: "1rem" }}>
-            {s.whatsapp && <a
-              className="btn wa"
-              href={wa("Hello LOOMS Craftz, I have an enquiry.", s.whatsapp)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Message directly on WhatsApp
-            </a>}
+          <div className="contact-map">
+            <iframe
+              title="Map showing Meerut, Uttar Pradesh"
+              src="https://maps.google.com/maps?q=Meerut%2C%20Uttar%20Pradesh%2C%20India&z=12&output=embed"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
 
@@ -97,9 +95,9 @@ export default async function P({ params }: Params) {
             Send an Online Enquiry
           </h2>
           <p className="lead">
-            Prepare your enquiry and continue in WhatsApp to send it. This form does not deliver or store enquiries.
+            Share your details and we’ll prepare your enquiry for you to send.
           </p>
-          <EnquiryForm />
+          <EnquiryForm termsAvailable={termsAvailable} />
         </div>
       </div>
     );

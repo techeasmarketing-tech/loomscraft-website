@@ -270,7 +270,7 @@ export function Provider({
         : "";
 
     return wa(
-      `Hello LOOMS Craftz, I'd like to place an enquiry/order:\n\n${list}\n\nTotal: ${inr(total)}${savingsText}\n\nPlease confirm availability, delivery timelines, and payment options.`,
+      `Hello Loom Craftz, I'd like to place an enquiry/order:\n\n${list}\n\nTotal: ${inr(total)}${savingsText}\n\nPlease confirm availability, delivery timelines, and payment options.`,
       whatsapp,
     );
   };

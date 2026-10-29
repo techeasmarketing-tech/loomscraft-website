@@ -67,7 +67,7 @@ export default function FloatingContact({
     const tel = phone.replace(/[^\d+]/g, "");
     const ig = instagramUrl(instagram || "");
     const message =
-        "Hello LOOMS Craftz, I'd like to enquire about your bedding." +
+        "Hello Loom Craftz, I'd like to enquire about your bedding." +
         (page ? `\n\nI was looking at: ${page}` : "");
     const waHref = wa(message, whatsapp);
 
@@ -107,7 +107,7 @@ export default function FloatingContact({
     if (!items.length) return null;
 
     return (
-        <nav className="fc" aria-label="Contact LOOMS Craftz">
+        <nav className="fc" aria-label="Contact Loom Craftz">
             {items.map((it, i) => (
                 <motion.a
                     key={it.key}

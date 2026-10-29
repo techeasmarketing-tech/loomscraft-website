@@ -1,5 +1,5 @@
 :root {
-  /* Palette sampled from the LOOMS Craftz logo */
+  /* Palette sampled from the Loom Craftz logo */
   --navy: #0e1f32;
   --navy-2: #162b45;
   --navy-deep: #091524;
@@ -240,6 +240,28 @@ header.scrolled .logo img {
 .shop-action:hover {
   color: var(--gold);
   background: transparent;
+}
+
+.contact-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.8rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--gold);
+  color: var(--gold-lt);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    color 0.25s,
+    background 0.25s;
+}
+
+.contact-action:hover {
+  color: var(--navy);
+  background: var(--gold);
 }
 
 .burger {
@@ -599,19 +621,19 @@ header.scrolled {
   font-size: clamp(2.2rem, 4.6vw, 3.8rem);
   line-height: 1.08;
   color: var(--navy);
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .shead {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .shead .kick {
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
 }
 
 .shead .st {
-  margin-bottom: 1.4rem;
+  margin-bottom: 0.85rem;
   max-width: 18ch;
 }
 
@@ -640,6 +662,10 @@ header.scrolled {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.2rem;
+}
+
+.cats-more {
+  margin-top: 2rem;
 }
 
 .cat {
@@ -819,6 +845,51 @@ header.scrolled {
 .more {
   text-align: center;
   margin-top: 3rem;
+}
+
+.contact-map {
+  width: 100%;
+  height: clamp(16rem, 45vw, 25rem);
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+.contact-map iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.enquiry-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.enquiry-consent input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.25rem;
+  accent-color: var(--gold);
+}
+
+.enquiry-consent label {
+  cursor: pointer;
+}
+
+.enquiry-consent a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.footer-cta {
+  width: fit-content;
+  margin-top: 0.4rem;
 }
 
 .testimonials-wrap {
@@ -1384,6 +1455,10 @@ footer a:hover {
     padding: 0.45rem 0.7rem;
   }
 
+  .contact-action {
+    display: none;
+  }
+
   .mega {
     display: none;
   }
@@ -1408,6 +1483,15 @@ footer a:hover {
     display: block;
     padding: 0.6rem 1rem;
     color: #b9c3d2;
+  }
+
+  .mobile a.mobile-contact {
+    margin-top: 0.5rem;
+    border-top: 1px solid #ffffff1f;
+    color: var(--gold-lt);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
   .logo img {
@@ -1930,20 +2014,6 @@ html {
   scrollbar-width: thin;
 }
 
-/* Word-by-word heading reveal */
-.st .w {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-bottom: 0.14em;
-  margin-bottom: -0.14em;
-}
-
-.st .wi {
-  display: inline-block;
-  will-change: transform;
-}
-
 /* Auto-scrolling brand ticker */
 .marquee {
   overflow: hidden;
@@ -2145,10 +2215,6 @@ footer a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .st .wi {
-    transform: none !important;
-  }
-
   .marquee-track {
     animation: none;
   }

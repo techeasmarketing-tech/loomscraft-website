@@ -33,7 +33,7 @@ export default function Loading() {
         className="kick dark"
         style={{ letterSpacing: "0.2em", fontSize: "0.8rem" }}
       >
-        LOOMS Craftz
+        Loom Craftz
       </p>
       <p style={{ color: "var(--mut)", fontSize: "0.95rem" }}>
         Loading soft layers...

@@ -232,7 +232,7 @@ const siteSettings = defineType({
     defineField({
       name: "founderRole",
       title: "Founder story: role",
-      description: "Example: Founder, LOOMS Craftz",
+      description: "Example: Founder, Loom Craftz",
       type: "string",
     }),
     defineField({

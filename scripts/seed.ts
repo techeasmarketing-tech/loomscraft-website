@@ -108,7 +108,7 @@ async function main() {
     headline1: "Soft layers.",
     headline2: "Thoughtful craft.",
     subtext:
-      "LOOMS Craftz makes bedsheets and bedding that feel as good as they look: deep-pocket fits, calm colours and finishes made for real sleep.",
+      "Loom Craftz makes bedsheets and bedding that feel as good as they look: deep-pocket fits, calm colours and finishes made for real sleep.",
     craftTitle: "Fabric you can feel, finish you can trust.",
     craftText:
       "Every sheet is cut for deep mattresses, stitched with strong elastic and washed for softness before it reaches your bed. We keep the colours calm so your bedroom can be too.",
@@ -124,7 +124,7 @@ async function main() {
     [
       "Our craft",
       "our-craft",
-      "LOOMS Craftz began with a simple idea: bedding should feel as good as it looks. We choose long-staple cotton, cut every sheet for deep mattresses and finish seams so they last wash after wash.\n\nOur palette stays calm: navy, charcoal, sage, blush and white, so your bedroom feels like a retreat.",
+      "Loom Craftz began with a simple idea: bedding should feel as good as it looks. We choose long-staple cotton, cut every sheet for deep mattresses and finish seams so they last wash after wash.\n\nOur palette stays calm: navy, charcoal, sage, blush and white, so your bedroom feels like a retreat.",
     ],
     [
       "Delivery information",
@@ -134,7 +134,7 @@ async function main() {
     [
       "Returns and exchanges",
       "returns-and-exchanges",
-      "We want you to love your LOOMS Craftz bedding. If an item arrives damaged, flawed, or incorrect, please message us on WhatsApp within 48 hours of delivery with photos so we can replace it immediately.\n\nDue to the intimate and hygiene-sensitive nature of bedding, unwashed items in their original packaging may be exchanged within 7 days of delivery. Custom-tailored sizes and washed items cannot be returned.",
+      "We want you to love your Loom Craftz bedding. If an item arrives damaged, flawed, or incorrect, please message us on WhatsApp within 48 hours of delivery with photos so we can replace it immediately.\n\nDue to the intimate and hygiene-sensitive nature of bedding, unwashed items in their original packaging may be exchanged within 7 days of delivery. Custom-tailored sizes and washed items cannot be returned.",
     ],
     [
       "Privacy policy",
@@ -144,7 +144,7 @@ async function main() {
     [
       "Terms & Conditions",
       "terms",
-      "Prices, specifications, and availability are verified at the time of your WhatsApp conversation. LOOMS Craftz reserves the right to correct any typographical or pricing discrepancies prior to order confirmation.",
+      "Prices, specifications, and availability are verified at the time of your WhatsApp conversation. Loom Craftz reserves the right to correct any typographical or pricing discrepancies prior to order confirmation.",
     ],
   ];
   for (const [title, s, body] of pages)

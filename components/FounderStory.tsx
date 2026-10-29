@@ -15,7 +15,7 @@ import type { Settings } from "@/lib/types";
 const DEFAULT_QUOTE =
     "The bed is where every day ends and begins. It deserves more care than a product page can ever show.";
 const DEFAULT_STORY = [
-    "LOOMS Craftz began with a simple belief: the place you sleep deserves real attention. A bedsheet is the one thing you touch every single night, so we treat it that way.",
+    "Loom Craftz began with a simple belief: the place you sleep deserves real attention. A bedsheet is the one thing you touch every single night, so we treat it that way.",
     "That is why every sheet is cut for deep mattresses, stitched with strong elastic and washed for softness before it reaches your bed, and why we keep our colours calm so your bedroom can be too.",
     "And because buying bedding online can feel uncertain, we keep it personal. You speak with us directly on WhatsApp or by phone, and we confirm stock, delivery and payment with you before anything is final.",
 ];
@@ -39,14 +39,14 @@ const PILLARS = [
     {
         n: "04",
         t: "Backed by a company",
-        d: "LOOMS Craftz is a venture of Savade Pvt Ltd, a registered company you can hold accountable.",
+        d: "Loom Craftz is a venture of Savade Pvt Ltd, a registered company you can hold accountable.",
     },
 ];
 
 export default function FounderStory({ s }: { s: Settings }) {
     const name = (s.founderName || "Devang Bhardwaj").trim();
     // const signatureName = name || "Devang Bhardwaj";
-    const role = (s.founderRole || "").trim() || "Founder, LOOM Craftz";
+    const role = (s.founderRole || "").trim() || "Founder, Loom Craftz";
     const quote = (s.founderQuote || "").trim() || DEFAULT_QUOTE;
     const story = (s.founderStory || "")
         .split(/\n\s*\n/)
@@ -54,7 +54,7 @@ export default function FounderStory({ s }: { s: Settings }) {
         .filter(Boolean);
     const paragraphs = story.length ? story : DEFAULT_STORY;
     const waHref = wa(
-        "Hello LOOMS Craftz, I read your story and would like to talk about bedding.",
+        "Hello Loom Craftz, I read your story and would like to talk about bedding.",
         s.whatsapp,
     );
 
@@ -66,7 +66,7 @@ export default function FounderStory({ s }: { s: Settings }) {
                         {s.founderPhoto ? (
                             <SanityImage
                                 src={s.founderPhoto}
-                                alt={name ? `${name}, founder of LOOMS Craftz` : "Founder of LOOMS Craftz"}
+                                alt={name ? `${name}, founder of Loom Craftz` : "Founder of Loom Craftz"}
                                 fill
                                 sizes="(max-width: 900px) 90vw, 40vw"
                             />
@@ -74,7 +74,7 @@ export default function FounderStory({ s }: { s: Settings }) {
                             <div className="founder-mono">
                                 <Image
                                     src="/founder.png"
-                                    alt="LOOMS Craftz"
+                                    alt="Loom Craftz"
                                     width={940}
                                     height={672}
                                     sizes="320px"
@@ -96,7 +96,7 @@ export default function FounderStory({ s }: { s: Settings }) {
 
                 <div className="founder-copy">
                     <Reveal>
-                        <p className="kick">The story behind LOOMS Craftz</p>
+                        <p className="kick">The story behind Loom Craftz</p>
                     </Reveal>
                     <Reveal delay={0.1}>
                         <h2 id="founder-title">

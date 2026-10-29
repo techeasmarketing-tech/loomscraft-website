@@ -174,7 +174,7 @@ const HD: HomeContent = {
   headline1: "Soft layers.",
   headline2: "Thoughtful craft.",
   subtext:
-    "LOOMS Craftz makes bedsheets and bedding that feel as good as they look: deep-pocket fits, calm colours and finishes made for real sleep.",
+    "Loom Craftz makes bedsheets and bedding that feel as good as they look: deep-pocket fits, calm colours and finishes made for real sleep.",
   craftTitle: "Fabric you can feel, finish you can trust.",
   craftText:
     "Every sheet is cut for deep mattresses, stitched with strong elastic and washed for softness before it reaches your bed. We keep the colours calm so your bedroom can be too.",
@@ -192,6 +192,10 @@ export const getHome = async (): Promise<HomeContent> => {
   return {
     ...HD,
     ...defined,
+    subtext:
+      typeof defined.subtext === "string"
+        ? defined.subtext.replace(/\bLooms Craftz\b/gi, "Loom Craftz")
+        : HD.subtext,
     heroImage: imageUrl(h.heroImage, 2000, "max") || HERO,
     craftImage: imageUrl(h.craftImage, 1200, "crop") || CRAFT,
     testimonials: h.testimonials || [],

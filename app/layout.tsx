@@ -13,8 +13,8 @@ const isPreviewDeployment = process.env.VERCEL_ENV === "preview";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "LOOMS Craftz | Premium Bedsheets & Bed Linen",
-    template: "%s | LOOMS Craftz",
+    default: "Loom Craftz | Premium Bedsheets & Bed Linen",
+    template: "%s | Loom Craftz",
   },
   description:
     "Premium bedsheets, fitted sheets, duvet covers and bedding sets, crafted for soft sleep. Browse collections and order directly on WhatsApp.",
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
     "fitted sheets",
     "duvet covers",
     "luxury bedding",
-    "LOOMS Craftz",
+    "Loom Craftz",
   ],
-  authors: [{ name: "LOOMS Craftz" }],
-  creator: "LOOMS Craftz",
-  publisher: "LOOMS Craftz",
+  authors: [{ name: "Loom Craftz" }],
+  creator: "Loom Craftz",
+  publisher: "Loom Craftz",
   formatDetection: {
     telephone: true,
   },
@@ -36,16 +36,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: siteUrl,
-    siteName: "LOOMS Craftz",
-    title: "LOOMS Craftz | Premium Bedsheets & Bed Linen",
+    siteName: "Loom Craftz",
+    title: "Loom Craftz | Premium Bedsheets & Bed Linen",
     description:
       "Premium bedsheets, fitted sheets, duvet covers and bedding sets, crafted for soft sleep. Browse collections and order directly on WhatsApp.",
-    images: [{ url: "/logo-on-navy.png", width: 1200, height: 874, alt: "LOOMS Craftz" }],
+    images: [{ url: "/logo-on-navy.png", width: 1200, height: 874, alt: "Loom Craftz" }],
   },
   twitter: {
     card: "summary_large_image",
     images: ["/logo-on-navy.png"],
-    title: "LOOMS Craftz | Premium Bedsheets & Bed Linen",
+    title: "Loom Craftz | Premium Bedsheets & Bed Linen",
     description:
       "Premium bedsheets, fitted sheets, duvet covers and bedding sets, crafted for soft sleep.",
   },

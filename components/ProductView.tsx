@@ -188,7 +188,7 @@ export default function ProductView({
                 target="_blank"
                 rel="noreferrer"
                 href={wa(
-                  `Hello LOOMS Craftz, I'd like to order ${qty} x ${p.name}, ${v.colour} (${v.sku}), size ${size}, ${inr(currentPrice * qty)}.`,
+                  `Hello Loom Craftz, I'd like to order ${qty} x ${p.name}, ${v.colour} (${v.sku}), size ${size}, ${inr(currentPrice * qty)}.`,
                 )}
               >
                 Order now on WhatsApp
@@ -200,7 +200,7 @@ export default function ProductView({
               target="_blank"
               rel="noreferrer"
               href={wa(
-                `Hello LOOMS Craftz, is ${p.name} in ${v.colour} (${v.sku}) coming back in stock?`,
+                `Hello Loom Craftz, is ${p.name} in ${v.colour} (${v.sku}) coming back in stock?`,
               )}
             >
               Sold out: ask about restock

@@ -8,7 +8,7 @@ import { projectId, dataset, apiVersion } from "./sanity/env";
 const singletons = ["siteSettings", "homePage"];
 export default defineConfig({
   name: "default",
-  title: "LOOMS Craftz",
+  title: "Loom Craftz",
   basePath: "/studio",
   projectId,
   dataset,

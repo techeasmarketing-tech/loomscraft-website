@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 type Props = {
   productSlug?: string;
   productName?: string;
   variantColour?: string;
   variantSku?: string;
+  termsAvailable?: boolean;
   onSuccess?: () => void;
 };
 
@@ -14,11 +17,13 @@ export default function EnquiryForm({
   productName,
   variantColour,
   variantSku,
+  termsAvailable = false,
   onSuccess,
 }: Props) {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState(
     productName
       ? `Hi, I would like more information about ${productName}${variantColour ? ` in ${variantColour}` : ""}.`
@@ -37,9 +42,15 @@ export default function EnquiryForm({
     const newErrors: Record<string, string> = {};
 
     if (!name.trim()) newErrors.name = "Name is required.";
-    if (!contact.trim())
-      newErrors.contact = "Phone or WhatsApp number is required.";
-    if (!message.trim()) newErrors.message = "Message is required.";
+    const phoneNumber = parsePhoneNumberFromString(contact.trim());
+    if (!phoneNumber?.isValid())
+      newErrors.contact =
+        "Enter a valid phone number including its country calling code (e.g. +91 98765 43210).";
+    if (!email.trim()) newErrors.email = "Email is required.";
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      newErrors.email = "Enter a valid email address.";
+    if (message.trim().length > 2000)
+      newErrors.message = "Message must be 2000 characters or fewer.";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -58,6 +69,7 @@ export default function EnquiryForm({
           contact,
           email,
           message,
+          consent,
           productSlug,
           productName,
           variantColour,
@@ -110,6 +122,7 @@ export default function EnquiryForm({
             onClick={() => {
               setResult(null);
               setMessage("");
+              setConsent(false);
             }}
           >
             Send another enquiry
@@ -155,16 +168,19 @@ export default function EnquiryForm({
       <div className="enquiry-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
           <label htmlFor="enquiry-contact" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
-            Phone / WhatsApp *
+            Phone number with country code *
           </label>
           <input
             id="enquiry-contact"
             aria-invalid={!!errors.contact}
             aria-describedby={errors.contact ? "error-contact" : undefined}
             type="tel"
+            required
+            inputMode="tel"
+            autoComplete="tel"
             value={contact}
             onChange={(e) => setContact(e.target.value)}
-            placeholder="e.g. 9876543210"
+            placeholder="+91 98765 43210"
             style={{ width: "100%", padding: "0.9rem 1rem", border: errors.contact ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit" }}
           />
           {errors.contact && <span id="error-contact" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.contact}</span>}
@@ -172,13 +188,14 @@ export default function EnquiryForm({
 
         <div>
           <label htmlFor="enquiry-email" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
-            Email (Optional)
+            Email *
           </label>
           <input
             id="enquiry-email"
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? "error-email" : undefined}
             type="email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. priya@example.com"
@@ -190,19 +207,43 @@ export default function EnquiryForm({
 
       <div>
         <label htmlFor="enquiry-message" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
-          Message / Requirement *
+          Message / Requirement (Optional)
         </label>
         <textarea
           id="enquiry-message"
           aria-invalid={!!errors.message}
           aria-describedby={errors.message ? "error-message" : undefined}
           rows={4}
+          maxLength={2000}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Tell us about your requirements, custom size needs, or questions..."
           style={{ width: "100%", padding: "0.9rem 1rem", border: errors.message ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit", resize: "vertical" }}
         />
         {errors.message && <span id="error-message" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.message}</span>}
+      </div>
+
+      <div className="enquiry-consent">
+        <input
+          id="enquiry-consent"
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          aria-invalid={!!errors.consent}
+          aria-describedby={errors.consent ? "error-consent" : undefined}
+        />
+        <p>
+          <label htmlFor="enquiry-consent">
+            Optional: I agree to be contacted by Loom Craftz via WhatsApp and/or email regarding my enquiry
+            {termsAvailable && ", in accordance with the "}
+          </label>
+          {termsAvailable && (
+            <>
+              <Link href="/terms">Terms and Conditions</Link>.
+            </>
+          )}
+          {!termsAvailable && "."}
+        </p>
       </div>
 
       <button type="submit" className="btn" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>

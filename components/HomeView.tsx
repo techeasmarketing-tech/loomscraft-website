@@ -18,7 +18,7 @@ import ThreadDivider from "@/components/ThreadDivider";
 import Marquee from "@/components/Marquee";
 
 const EASE = [0.2, 0.7, 0.1, 1] as [number, number, number, number];
-const TICKER = ["Premium Bedsheets", "Soft Sleep", "Crafted Layers", "LOOMS Craftz"];
+const TICKER = ["Premium Bedsheets", "Soft Sleep", "Crafted Layers", "Loom Craftz"];
 
 /**
  * Hero background video. To change it, replace the file at
@@ -48,39 +48,11 @@ function SectionHead({
   title: string;
   light?: boolean;
 }) {
-  const reduce = useReducedMotion();
-  const view = { once: true, margin: "0px 0px -80px 0px" };
   return (
     <div className={`shead${light ? " light" : ""}`}>
-      {kicker && (
-        <Reveal y={16}>
-          <p className="kick dark">{kicker}</p>
-        </Reveal>
-      )}
-      <h2 className="st" aria-label={title}>
-        {title.split(" ").map((word, i) => (
-          <span className="w" key={`${word}-${i}`} aria-hidden="true">
-            <motion.span
-              className="wi"
-              initial={reduce ? false : { y: "115%" }}
-              whileInView={{ y: 0 }}
-              viewport={view}
-              transition={{ duration: 1, delay: 0.07 * i, ease: EASE }}
-            >
-              {word}
-            </motion.span>{" "}
-          </span>
-        ))}
-      </h2>
-      <motion.span
-        className="rule"
-        aria-hidden="true"
-        style={{ transformOrigin: "left" }}
-        initial={reduce ? false : { scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={view}
-        transition={{ duration: 1.2, delay: 0.3, ease: EASE }}
-      />
+      {kicker && <p className="kick dark">{kicker}</p>}
+      <h2 className="st">{title}</h2>
+      <span className="rule" aria-hidden="true" />
     </div>
   );
 }
@@ -133,7 +105,7 @@ export default function HomeView({
         >
           <SanityImage
             src={home.heroImage || HERO}
-            alt="LOOMS Craftz bedding in a softly styled bedroom"
+            alt="Loom Craftz bedding in a softly styled bedroom"
             fill
             priority
             sizes="100vw"
@@ -240,6 +212,11 @@ export default function HomeView({
             );
           })}
         </div>
+        <p className="more cats-more">
+          <Link className="btn ghost dark" href="/collections">
+            Explore More
+          </Link>
+        </p>
       </section>
 
       <ThreadDivider />
@@ -247,7 +224,7 @@ export default function HomeView({
       <div className="band">
         <section className="sec">
           <SectionHead
-            kicker="Why choose LOOMS Craftz"
+            kicker="Why choose Loom Craftz"
             title="Thoughtful design for softer, easier nights."
             light
           />
@@ -265,6 +242,7 @@ export default function HomeView({
         </section>
       </div>
 
+      {/* Temporarily hidden at the client's request; keep this section for possible reuse.
       <section className="sec">
         <SectionHead kicker="Curated for you" title="Shop by room" />
         <div className="room-grid">
@@ -289,6 +267,7 @@ export default function HomeView({
           ))}
         </div>
       </section>
+      */}
 
       <section className="sec">
         <SectionHead kicker="Bestsellers" title="Featured pieces" />
@@ -349,9 +328,14 @@ export default function HomeView({
             <p>{home.craftText}</p>
           </Reveal>
           <Reveal delay={0.36}>
-            <Link className="btn" href="/our-craft">
-              Read our story
-            </Link>
+            <div className="craft-actions">
+              <Link className="btn" href="/our-craft">
+                Read our story
+              </Link>
+              <Link className="btn craft-contact" href="/contact">
+                Contact us
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>

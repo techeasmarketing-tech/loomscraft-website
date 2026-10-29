@@ -329,12 +329,12 @@ export const NAV = [
   },
   {
     l: "Our Craft",
-    b: "The LOOMS Craftz story: fabric, finish and calm bedrooms.",
+    b: "The Loom Craftz story: fabric, finish and calm bedrooms.",
     g: [
       {
         t: "The brand",
         k: [
-          ["About LOOMS Craftz", "/our-craft"],
+          ["About Loom Craftz", "/our-craft"],
           ["FAQs", "/faqs"],
           ["Contact", "/contact"],
         ],

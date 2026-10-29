@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProduct, getSettings } from "@/lib/sanity";
 import { randomUUID } from "node:crypto";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,6 +11,7 @@ export async function POST(req: NextRequest) {
       contact,
       email,
       message,
+      consent,
       productSlug,
       variantColour,
       variantSku,
@@ -26,19 +28,18 @@ export async function POST(req: NextRequest) {
       errors.name = "Please enter your name (minimum 2 characters).";
     }
 
-    if (
-      !contact ||
-      typeof contact !== "string" ||
-      contact.trim().length < 7 ||
-      contact.trim().length > 40
-    ) {
+    const phoneNumber =
+      typeof contact === "string"
+        ? parsePhoneNumberFromString(contact.trim())
+        : undefined;
+    if (!phoneNumber?.isValid()) {
       errors.contact =
-        "Please provide a valid phone or WhatsApp number (minimum 7 digits).";
+        "Please provide a valid phone number with its country calling code.";
     }
 
-    if (email && (typeof email !== "string" || email.trim().length > 254)) {
+    if (typeof email !== "string" || !email.trim() || email.trim().length > 254) {
       errors.email = "Please enter a valid email address.";
-    } else if (email && email.trim().length > 0) {
+    } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email.trim())) {
         errors.email = "Please enter a valid email address.";
@@ -46,13 +47,14 @@ export async function POST(req: NextRequest) {
     }
 
     if (
-      !message ||
-      typeof message !== "string" ||
-      message.trim().length < 5 ||
-      message.trim().length > 2000
+      (message !== undefined && typeof message !== "string") ||
+      (typeof message === "string" && message.trim().length > 2000)
     ) {
-      errors.message =
-        "Please enter your enquiry or question (minimum 5 characters).";
+      errors.message = "Message must be 2000 characters or fewer.";
+    }
+
+    if (typeof consent !== "boolean") {
+      errors.consent = "The consent response is invalid.";
     }
 
     // Validate product if a product was selected
@@ -89,7 +91,7 @@ export async function POST(req: NextRequest) {
     const enquiryRecord = {
       id: enquiryId,
       name: name.trim(),
-      message: message.trim(),
+      message: typeof message === "string" ? message.trim() : "",
       product: verifiedProduct
         ? {
             name: verifiedProduct.name,
@@ -107,7 +109,7 @@ export async function POST(req: NextRequest) {
       ? ` regarding ${enquiryRecord.product.name} (${enquiryRecord.product.variantColour || "Standard"}, SKU: ${enquiryRecord.product.variantSku || "N/A"})`
       : "";
 
-    const waText = `Hello LOOMS Craftz, I submitted an enquiry (Ref: ${enquiryId})${productNote}.\nName: ${enquiryRecord.name}\nMessage: ${enquiryRecord.message}`;
+    const waText = `Hello Loom Craftz, I submitted an enquiry (Ref: ${enquiryId})${productNote}.\nName: ${enquiryRecord.name}\nPhone: ${contact.trim()}\nEmail: ${email.trim()}${enquiryRecord.message ? `\nMessage: ${enquiryRecord.message}` : ""}`;
     const digits = settings.whatsapp.replace(/\D/g, "");
     const waUrl = digits ? `https://wa.me/${digits}?text=${encodeURIComponent(waText)}` : "";
 
@@ -115,7 +117,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       enquiryId,
       message:
-        "Your enquiry draft is ready. Continue in WhatsApp to send it to LOOMS Craftz.",
+        "Your enquiry draft is ready. Continue in WhatsApp to send it to Loom Craftz.",
       whatsappUrl: waUrl,
     });
   } catch (err) {
@@ -124,7 +126,7 @@ export async function POST(req: NextRequest) {
       {
         ok: false,
         error:
-          "Internal server error processing enquiry. Please try again or reach out on WhatsApp.",
+          "Internal server error processing enquiry. Please try again or contact Loom Craftz.",
       },
       { status: 500 },
     );
