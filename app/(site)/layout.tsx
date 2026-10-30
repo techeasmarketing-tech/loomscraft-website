@@ -2,7 +2,7 @@ import "../globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import { Provider } from "@/lib/store";
-import { getSettings, getCategories, getAllPageSlugs } from "@/lib/sanity";
+import { getSettings, getAllPageSlugs } from "@/lib/sanity";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -13,9 +13,8 @@ export default async function SiteLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [s, categories, pageSlugs] = await Promise.all([
+  const [s, pageSlugs] = await Promise.all([
     getSettings(),
-    getCategories(),
     getAllPageSlugs(),
   ]);
   const publishedPages = new Set(pageSlugs);
@@ -32,12 +31,7 @@ export default async function SiteLayout({
   return (
     <Provider whatsapp={s.whatsapp}>
       <ScrollProgress />
-      <Header
-        phone={s.phone}
-        tagline={s.tagline}
-        brandLine={s.brandTagline}
-        categories={categories}
-      />
+      <Header brandLine={s.brandTagline} />
       <main>{children}</main>
       <CartDrawer />
       {/* Temporarily hidden at the client's request; keep for possible reuse.

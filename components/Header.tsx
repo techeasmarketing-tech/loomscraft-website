@@ -1,32 +1,37 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import SanityImage from "@/components/SanityImage";
-import { NAV } from "@/lib/data";
 import { useStore } from "@/lib/store";
 
-export default function Header({
-  phone,
-  tagline,
-  brandLine,
-  categories,
-}: {
-  phone: string;
-  tagline?: string;
-  brandLine?: string;
-  categories?: string[];
-}) {
-  const [o, setO] = useState<number | null>(null);
-  const [m, setM] = useState(false);
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/collections" },
+  { label: "Our Craft", href: "/our-craft" },
+  { label: "FAQs", href: "/faqs" },
+  { label: "Contact", href: "/contact" },
+] as const;
+
+function isActiveLink(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  if (href === "/collections") {
+    return (
+      pathname === href ||
+      pathname.startsWith(`${href}/`) ||
+      pathname.startsWith("/product/")
+    );
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+export default function Header({ brandLine }: { brandLine?: string }) {
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count, setOpen, wish } = useStore();
 
-  // Compact the header (hide utility bar, shrink logo) once the page scrolls.
   useEffect(() => {
-    // Hysteresis: collapse past 160px, expand only back near the top (24px).
-    // A single threshold made the header flip back and forth (layout jump)
-    // because collapsing it changes the page height and thus scrollY.
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled((prev) => (prev ? y > 24 : y > 160));
@@ -36,40 +41,37 @@ export default function Header({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Dynamic navigation: inject live Sanity categories if present
-  const dynamicNav = NAV.map((n) => {
-    if (n.l.toLowerCase() === "bed linen" && categories?.length) {
-      return {
-        ...n,
-        g: [
-          {
-            t: "By category",
-            k: categories.map((c) => [
-              c,
-              `/collections?category=${encodeURIComponent(c)}`,
-            ]),
-          },
-          ...n.g.slice(1),
-        ],
-      };
-    }
-    return n;
-  });
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
+
+  const renderLinks = (className: string) =>
+    navLinks.map(({ label, href }) => {
+      const active = isActiveLink(pathname, href);
+      return (
+        <Link
+          key={href}
+          className={className}
+          href={href}
+          aria-current={active ? "page" : undefined}
+          onClick={() => setMobileOpen(false)}
+        >
+          {label}
+        </Link>
+      );
+    });
 
   return (
-    <header
-      className={scrolled ? "scrolled" : ""}
-      onMouseLeave={() => setO(null)}
-    >
-      <div className="top">
-        <span>{tagline || "Premium bedsheets, soft sleep, crafted layers"}</span>
-        <span>
-          <Link href="/our-craft">Our Craft</Link>
-          <Link href="/faqs">FAQs</Link>
-          <Link href="/contact">Contact</Link>
-          <a href={`tel:${phone.replace(/[^\d+]/g, "")}`}>{phone}</a>
-        </span>
-      </div>
+    <header className={scrolled ? "scrolled" : undefined}>
       <div className="bar">
         <Link href="/" className="logo" aria-label="Loom Craftz home">
           <Image
@@ -82,9 +84,14 @@ export default function Header({
           />
           {brandLine && <span className="logo-tag">{brandLine}</span>}
         </Link>
+
+        <nav className="nav desktop-nav" aria-label="Main navigation">
+          {renderLinks("nav-link")}
+        </nav>
+
         <div className="icons">
           <button
-            className="header-action bag-action"
+            className="icon-action"
             onClick={() => setOpen(true)}
             aria-label={`Shopping bag with ${count} items`}
           >
@@ -93,18 +100,17 @@ export default function Header({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.7"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
               <path d="M5 8h14l1 13H4L5 8Z" />
               <path d="M9 9V6a3 3 0 0 1 6 0v3" />
             </svg>
-            <span>Bag</span>
-            <em>{count}</em>
+            {count > 0 && <span className="count-badge">{count}</span>}
           </button>
           <Link
-            className="header-action wishlist-action"
+            className="icon-action"
             href="/wishlist"
             aria-label={`Wishlist with ${wish.length} items`}
           >
@@ -113,110 +119,46 @@ export default function Header({
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.7"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
               <path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.7 4.7 0 0 1 12 6.2a4.7 4.7 0 0 1 8.8 2.5Z" />
             </svg>
-            <span>Wishlist</span>
-            <em>{wish.length}</em>
+            {wish.length > 0 && (
+              <span className="count-badge">{wish.length}</span>
+            )}
           </Link>
-          <Link className="shop-action" href="/collections">Shop</Link>
-          <Link className="contact-action" href="/contact">Contact us</Link>
-
           <button
             className="burger"
-            onClick={() => setM(!m)}
-            aria-label="Toggle navigation menu"
-            aria-expanded={m}
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
           >
-            <span className="hamburger" aria-hidden="true">☰</span><span>{m ? "Close" : "Menu"}</span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
           </button>
         </div>
       </div>
-      <nav className="nav" aria-label="Main navigation">
-        {dynamicNav.map((n, i) => (
-          <button
-            key={n.l}
-            className={o === i ? "act" : ""}
-            onMouseEnter={() => { if (window.matchMedia("(hover: hover)").matches) setO(i); }}
-            onClick={() => setO(o === i ? null : i)}
-            aria-expanded={o === i}
-          >
-            {n.l} <span className="nav-chevron" aria-hidden="true" />
-          </button>
-        ))}
+
+      <nav
+        className="nav mobile-nav"
+        id="mobile-navigation"
+        aria-label="Main navigation"
+        hidden={!mobileOpen}
+      >
+        {renderLinks("nav-link")}
       </nav>
-      {o !== null && (
-        <div className="mega">
-          <div>
-            <p className="mb">{dynamicNav[o].b}</p>
-            <div className="mg">
-              {dynamicNav[o].g.map((g) => (
-                <div key={g.t}>
-                  <h4>{g.t}</h4>
-                  {g.k.map(([l, h]) => (
-                    <Link key={l} href={h} onClick={() => setO(null)}>
-                      {l}
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mimg">
-            <SanityImage src={dynamicNav[o].i} alt={dynamicNav[o].l} fill sizes="300px" />
-            <p>{dynamicNav[o].b}</p>
-          </div>
-        </div>
-      )}
-      {m && (
-        <div className="mobile">
-          {dynamicNav.map((n) => (
-            <details key={n.l}>
-              <summary>{n.l}</summary>
-              {n.g
-                .flatMap((g) => g.k)
-                .map(([l, h]) => (
-                  <Link key={l} href={h} onClick={() => setM(false)}>
-                    {l}
-                  </Link>
-                ))}
-            </details>
-          ))}
-          <div
-            style={{
-              padding: "1rem 0",
-              borderTop: "1px solid var(--line)",
-              marginTop: "0.5rem",
-            }}
-          >
-            <Link
-              href="/our-craft"
-              onClick={() => setM(false)}
-              style={{ display: "block", padding: "0.5rem 0" }}
-            >
-              Our Craft
-            </Link>
-            <Link
-              href="/faqs"
-              onClick={() => setM(false)}
-              style={{ display: "block", padding: "0.5rem 0" }}
-            >
-              FAQs
-            </Link>
-            <Link
-              href="/contact"
-              className="mobile-contact"
-              onClick={() => setM(false)}
-              style={{ display: "block", padding: "0.5rem 0" }}
-            >
-              Contact us
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
