@@ -119,11 +119,14 @@ export default function FounderStory({ s }: { s: Settings }) {
                     </Reveal>
                     <Reveal delay={0.15}>
                         <div className="founder-cta">
-                            {waHref && (
+                            {/* {waHref && (
                                 <a className="btn gold" href={waHref} target="_blank" rel="noopener noreferrer">
                                     Talk to us on WhatsApp
                                 </a>
-                            )}
+                            )} */}
+                            <Link className="btn gold" href="/contact">
+                                Talk to us
+                            </Link>
                             <Link className="btn ghost" href="/collections">
                                 Explore the collection
                             </Link>

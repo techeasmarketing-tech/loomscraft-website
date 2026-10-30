@@ -24,8 +24,8 @@ export default async function SiteLayout({
     ? /^https?:\/\//i.test(instagram)
       ? instagram
       : `https://www.instagram.com/${encodeURIComponent(
-          instagram.replace(/^@/, "").replace(/\/$/, ""),
-        )}/`
+        instagram.replace(/^@/, "").replace(/\/$/, ""),
+      )}/`
     : "";
   const whatsappDigits = s.whatsapp.replace(/\D/g, "");
 
@@ -126,7 +126,7 @@ export default async function SiteLayout({
             <p>
               Email: <a href="mailto:info@loomcraftz.com">info@loomcraftz.com</a>
             </p>
-            <Link className="btn footer-cta" href="/contact">Contact us</Link>
+            {/* <Link className="btn footer-cta" href="/contact">Contact us</Link> */}
             {(publishedPages.has("delivery-information") ||
               publishedPages.has("returns-and-exchanges")) && (
                 <div style={{ marginTop: "1rem" }}>
