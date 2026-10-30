@@ -328,7 +328,7 @@ export default function HomeView({
             <p>{home.craftText}</p>
           </Reveal>
           <Reveal delay={0.36}>
-            <div className="craft-actions">
+            <div className="craft-actions" style={{ display: "flex", gap: "1rem" }}>
               <Link className="btn" href="/our-craft">
                 Read our story
               </Link>
