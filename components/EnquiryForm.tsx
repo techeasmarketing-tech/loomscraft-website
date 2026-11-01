@@ -2,6 +2,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import PhoneInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css";
 
 type Props = {
   productSlug?: string;
@@ -45,7 +48,7 @@ export default function EnquiryForm({
     const phoneNumber = parsePhoneNumberFromString(contact.trim());
     if (!phoneNumber?.isValid())
       newErrors.contact =
-        "Enter a valid phone number including its country calling code (e.g. +91 98765 43210).";
+        "Enter a valid phone number for the selected country.";
     if (!email.trim()) newErrors.email = "Email is required.";
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
       newErrors.email = "Enter a valid email address.";
@@ -168,20 +171,21 @@ export default function EnquiryForm({
       <div className="enquiry-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
           <label htmlFor="enquiry-contact" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
-            Phone number with country code *
+            Phone number *
           </label>
-          <input
+          <PhoneInput
             id="enquiry-contact"
+            international
+            countryCallingCodeEditable={false}
+            defaultCountry="IN"
+            flags={flags}
+            value={contact || undefined}
+            onChange={(value) => setContact(value ?? "")}
+            placeholder="98765 43210"
+            autoComplete="tel"
+            className={`phone-field${errors.contact ? " has-error" : ""}`}
             aria-invalid={!!errors.contact}
             aria-describedby={errors.contact ? "error-contact" : undefined}
-            type="tel"
-            required
-            inputMode="tel"
-            autoComplete="tel"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-            placeholder="+91 98765 43210"
-            style={{ width: "100%", padding: "0.9rem 1rem", border: errors.contact ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit" }}
           />
           {errors.contact && <span id="error-contact" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.contact}</span>}
         </div>
