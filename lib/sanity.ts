@@ -203,7 +203,11 @@ export const getHome = async (): Promise<HomeContent> => {
 };
 
 export const getFaqs = async (): Promise<Faq[]> =>
-  (await f<Faq[]>(`*[_type=="faq"] | order(order asc) {question,answer}`)) || [];
+  (await f<Faq[]>(
+    `*[_type=="faq"] | order(order asc) {question,answer}`,
+    {},
+    true,
+  )) || [];
 
 export const getPage = async (slug: string): Promise<PageDoc | null> =>
   f<PageDoc | null>(`*[_type=="page" && slug.current==$slug][0]{title,body}`, {
