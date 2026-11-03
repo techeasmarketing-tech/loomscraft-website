@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getProduct, getSettings } from "@/lib/sanity";
 import { randomUUID } from "node:crypto";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { BUYER_TYPES } from "@/lib/enquiry";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
       name,
+      buyerType,
       contact,
       email,
       message,
@@ -26,6 +28,13 @@ export async function POST(req: NextRequest) {
       name.trim().length > 120
     ) {
       errors.name = "Please enter your name (minimum 2 characters).";
+    }
+
+    if (
+      typeof buyerType !== "string" ||
+      !BUYER_TYPES.some((type) => type === buyerType)
+    ) {
+      errors.buyerType = "Please select a valid buyer type.";
     }
 
     const phoneNumber =
@@ -109,7 +118,7 @@ export async function POST(req: NextRequest) {
       ? ` regarding ${enquiryRecord.product.name} (${enquiryRecord.product.variantColour || "Standard"}, SKU: ${enquiryRecord.product.variantSku || "N/A"})`
       : "";
 
-    const waText = `Hello Loom Craftz, I submitted an enquiry (Ref: ${enquiryId})${productNote}.\nName: ${enquiryRecord.name}\nPhone: ${contact.trim()}\nEmail: ${email.trim()}${enquiryRecord.message ? `\nMessage: ${enquiryRecord.message}` : ""}`;
+    const waText = `Hello Loom Craftz, I submitted an enquiry (Ref: ${enquiryId})${productNote}.\nName: ${enquiryRecord.name}\nBuyer type: ${buyerType}\nPhone: ${contact.trim()}\nEmail: ${email.trim()}${enquiryRecord.message ? `\nMessage: ${enquiryRecord.message}` : ""}`;
     const digits = settings.whatsapp.replace(/\D/g, "");
     const waUrl = digits ? `https://wa.me/${digits}?text=${encodeURIComponent(waText)}` : "";
 

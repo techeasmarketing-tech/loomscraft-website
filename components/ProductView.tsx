@@ -183,16 +183,6 @@ export default function ProductView({
               >
                 Add to bag
               </button>
-              {whatsapp && <a
-                className="btn wa"
-                target="_blank"
-                rel="noreferrer"
-                href={wa(
-                  `Hello Loom Craftz, I'd like to order ${qty} x ${p.name}, ${v.colour} (${v.sku}), size ${size}, ${inr(currentPrice * qty)}.`,
-                )}
-              >
-                Order now on WhatsApp
-              </a>}
             </>
           ) : whatsapp ? (
             <a

@@ -269,7 +269,7 @@ export default function HomeView({
       </section>
       */}
 
-      <section className="sec">
+      <section className="sec featured-section">
         <SectionHead kicker="Bestsellers" title="Featured pieces" />
         <div className="grid">
           {featured.slice(0, 4).map((p, i) => (
@@ -286,6 +286,10 @@ export default function HomeView({
           </p>
         </Reveal>
       </section>
+
+      <div className="testimonials-divider">
+        <ThreadDivider />
+      </div>
 
       <section className="sec testimonials-wrap">
         <SectionHead
@@ -324,11 +328,37 @@ export default function HomeView({
           <Reveal delay={0.12}>
             <h2>{home.craftTitle}</h2>
           </Reveal>
-          <Reveal delay={0.24}>
-            <p>{home.craftText}</p>
-          </Reveal>
-          <Reveal delay={0.36}>
-            <div className="craft-actions" style={{ display: "flex", gap: "1rem" }}>
+          <div className="craft-story">
+            <Reveal delay={0.24}>
+              <p>{home.craftText}</p>
+            </Reveal>
+            <Reveal delay={0.3}>
+              <ul className="craft-points">
+                <li>
+                  <strong>Long-staple cotton</strong>
+                  <span>Chosen for a smooth, comfortable feel against your skin.</span>
+                </li>
+                <li>
+                  <strong>Made for a secure fit</strong>
+                  <span>Deep-mattress sizing and strong elastic help keep each sheet in place.</span>
+                </li>
+                <li>
+                  <strong>Softened for comfort</strong>
+                  <span>Each sheet is washed for a soft feel before it reaches your bed.</span>
+                </li>
+                <li>
+                  <strong>Calm by design</strong>
+                  <span>Considered colours bring an easy, restful feel to your room.</span>
+                </li>
+                <li>
+                  <strong>Finished for everyday use</strong>
+                  <span>Careful seams are made to hold up wash after wash.</span>
+                </li>
+              </ul>
+            </Reveal>
+          </div>
+          <Reveal delay={0.36} className="craft-actions-reveal">
+            <div className="craft-actions">
               <Link className="btn" href="/our-craft">
                 Read our story
               </Link>

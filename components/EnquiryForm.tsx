@@ -5,6 +5,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
+import { BUYER_TYPES } from "@/lib/enquiry";
 
 type Props = {
   productSlug?: string;
@@ -24,6 +25,7 @@ export default function EnquiryForm({
   onSuccess,
 }: Props) {
   const [name, setName] = useState("");
+  const [buyerType, setBuyerType] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -45,6 +47,7 @@ export default function EnquiryForm({
     const newErrors: Record<string, string> = {};
 
     if (!name.trim()) newErrors.name = "Name is required.";
+    if (!buyerType) newErrors.buyerType = "Select your buyer type.";
     const phoneNumber = parsePhoneNumberFromString(contact.trim());
     if (!phoneNumber?.isValid())
       newErrors.contact =
@@ -69,6 +72,7 @@ export default function EnquiryForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          buyerType,
           contact,
           email,
           message,
@@ -168,6 +172,27 @@ export default function EnquiryForm({
         {errors.name && <span id="error-name" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.name}</span>}
       </div>
 
+      <div>
+        <label htmlFor="enquiry-buyer-type" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
+          Buyer type *
+        </label>
+        <select
+          id="enquiry-buyer-type"
+          required
+          value={buyerType}
+          onChange={(e) => setBuyerType(e.target.value)}
+          aria-invalid={!!errors.buyerType}
+          aria-describedby={errors.buyerType ? "error-buyer-type" : undefined}
+          style={{ width: "100%", padding: "0.9rem 1rem", border: errors.buyerType ? "1px solid #b91c1c" : "1px solid var(--line)", background: "#fff", font: "inherit" }}
+        >
+          <option value="" disabled>Select your buyer type</option>
+          {BUYER_TYPES.map((type) => (
+            <option key={type} value={type}>{type}</option>
+          ))}
+        </select>
+        {errors.buyerType && <span id="error-buyer-type" role="alert" style={{ color: "#b91c1c", fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>{errors.buyerType}</span>}
+      </div>
+
       <div className="enquiry-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
           <label htmlFor="enquiry-contact" style={{ display: "block", fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", color: "var(--mut)" }}>
@@ -238,7 +263,7 @@ export default function EnquiryForm({
         />
         <p>
           <label htmlFor="enquiry-consent">
-            Optional: I agree to be contacted by Loom Craftz via WhatsApp and/or email regarding my enquiry
+            I agree to be contacted by Loom Craftz via WhatsApp and/or email regarding my enquiry
             {termsAvailable && ", in accordance with the "}
           </label>
           {termsAvailable && (

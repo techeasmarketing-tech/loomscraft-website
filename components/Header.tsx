@@ -87,10 +87,10 @@ export default function Header({ brandLine }: HeaderProps) {
           <Image
             src="/logo.png"
             alt="Loom Craftz"
-            width={940}
-            height={672}
+            width={256}
+            height={319}
             priority
-            sizes="(max-width: 900px) 70px, 110px"
+            sizes="(max-width: 900px) 100px, 125px"
           />
           {brandLine && <span className="logo-tag">{brandLine}</span>}
         </Link>
