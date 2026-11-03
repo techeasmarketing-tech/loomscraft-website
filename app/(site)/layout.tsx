@@ -66,7 +66,7 @@ export default async function SiteLayout({
                 </svg>
               </a>
               <a
-                href="https://www.facebook.com/"
+                href="https://www.facebook.com/profile.php?id=61594321827250"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
